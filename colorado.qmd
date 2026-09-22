@@ -1,0 +1,500 @@
+---
+title: "Plotting Assignment #7"
+subtitle: "Spatial Plots"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# load packages
+library(ggplot2)
+library(dplyr)
+library(sf)
+library(ggspatial)
+library(lubridate)
+library(rnaturalearth)
+library(ggrepel)
+```
+
+# Load Data
+
+```{r}
+#| message: false
+#| warning: false
+# loading well data from parquet in the data folder
+wells <- arrow::read_parquet("data/monitoring_wells.parquet") |>
+  st_as_sf(coords = c("DecLongVa", "DecLatVa")) |> # setting coordinates (Long, Lat) according to the named columns
+  st_set_crs("NAD83") |> # set coordinate system the well data is in
+  st_transform("WGS84") # transform coordinate system to WGS84
+
+wells <- wells |> filter(aquifer_name != "NA")
+
+# switch off spherical geometry to allow planar centroid calculations
+sf_use_s2(FALSE)
+
+# loading aquifer data
+aquifers <- sf::read_sf("data/aquifers/Bedrock Aquifer.shp") |>
+  st_transform("WGS84")
+
+# load water level data, add a new column that is water_level.ft to be the depth below the surface as negative numbers from the pre-existing depth column
+water_levels <- arrow::read_parquet("data/waterlevels.parquet") |>
+  mutate("water_level.ft" = (`Depth to Water Below Land Surface in ft.` * -1))
+
+
+# load lithology data
+lithology <- sf::read_sf("data/CO_lithology/CO_geol_poly.shp") |>
+  tidyr::separate(
+    "GENERALIZE",
+    into = c("major_rock_type", "rock_type_details"), # throws a warning that missing pieces are filled with "NA", these columns are the WATER columns (not rocks)
+    sep = ","
+  )
+
+# load counties data
+counties_co <- maps::map("county", fill = TRUE) |>
+  st_as_sf() |>
+  tidyr::separate(ID, into = c("state", "county"), sep = ",") |> # split the ID into "state" and "county" which are separated by commas
+  st_as_sf() |>
+  filter(state == "colorado") |> # filter to only get counties in colorado
+  st_transform("WGS84") #  transform into WGS84 coordinate system
+
+# states
+states <- ne_states(country = "United States of America") |>
+  st_as_sf()
+
+# focus on colorado
+co <- states |> filter(name == "Colorado")
+co_bbox <- co |> st_bbox()
+
+```
+
+## Exploratory Plots/Data Vis
+
+```{r}
+#| warning: false
+
+# # plot wells
+# ggplot() + geom_sf(data = wells, map = aes(color = aquifer_name))
+
+# plot aquifers
+# ggplot() +
+#   geom_sf(data = aquifers, map = aes(color = NAME)) +
+#   geom_sf_label(
+#     data = aquifers,
+#     map = aes(
+#       color = NAME,
+#       label = NAME,
+#       size = ,
+#       geometry = st_centroid(geometry)
+#     ),
+#     show.legend = FALSE
+#   )
+
+# # plot water levels
+# water_levels |>
+#   group_by(aquifer_name) |>
+#   summarize(mean_water_level.ft = mean(water_level.ft))
+
+# # plot lithology
+# ggplot() + geom_sf(data = lithology, map = aes(fill = major_rock_type))
+
+# # plot colorado counties
+# ggplot() +
+#   geom_sf(data = counties_co) +
+#   geom_sf_text(data = counties_co, map = aes(label = county))
+```
+
+# Plots
+
+# Plot 1: Geologic Map of Colorado with Monitoring Wells
+@fig-1, a geologic map, shows the lithology of Colorado, illustrated by colors, with the locations of six aquifers and their associated monitoring wells overlain. The igneous and metamorphic rock shown (in the middle in purple and pink) represent the Front Range mountain range, with the Denver Basin westernmost extent nestled right up against the foothills. Water is the least common surface feature compared to all of the rock types. Most of the aquifers are found in igneous and sedimentary bedrock, but this is likely due to the fact that Colorado is mostly igneous and sedimentary bedrock. The High Plains basin has the most number of monitoring wells (n = 126) in Colorado, while the Paradox and San Juan Basins have 1 and 2 wells, respectively, in the state. The High Plains Basin wells are relatively well spaced out, while the Piceance Basin and San Luis Basin wells are closer together overall--and there are fewer in the latter two. On this map, the High Plains basin is the largest (in the real world it covers ~112 million acres), whereas the San Luis Basin is the smallest (~2 million acres in the real world; both numbers from the Bureau of Land Management website). 
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-1
+#| fig-height: 6
+#| fig-width: 10
+#| fig-cap: Figure showing Colorado lithology (rock type), extent of six CO aquifers, and locations of wells in each of the aquifers. Colors correspond to different rock types and different basins.
+
+# making a colors vector for the rock types
+colors <- c(
+  "Igneous" = "#FF6F91",
+  "Sedimentary" = "#92DCB7",
+  "Metamorphic" = "#A7A7FF",
+  "Metamorphic and Sedimentary" = "#7DFF7D",
+  "Igneous and Sedimentary" = "#60CCBF",
+  "Unconsolidated" = "#FDF43F",
+  "Unconsolidated and Sedimentary" = "#FFFF89",
+  "Water" = "#99CCFF"
+)
+
+# filtering aquifers and wells to remove NA values so that I can plot only the ones with monitoring wells
+filtered_aquifers <- aquifers |>
+  filter(!is.na(NAME)) |>
+  st_filter(wells)
+
+wells <- wells |>
+  filter(!is.na(aquifer_name))
+
+
+# making the plot, geologic map of colorado with monitoring wells/aquifer locations
+lithology |>
+  ggplot() + # creating the plot frame
+  geom_sf(aes(fill = major_rock_type)) + # adding the major rock type as a spatial feature layer, with fill according to the different rock type
+  scale_fill_manual(values = colors) + # setting the fill colors to be the ones I determined in the colors vector above
+  geom_sf(
+    # adding aquifer information/plotting the aquifers
+    data = filtered_aquifers, # filtering by those who have wells
+    aes(color = NAME), # coloring them by aquifer name
+    show.legend = FALSE, # turning the legend off for this geom because otherwise it adds a polygon to the legend entry, when all you really see are points
+    alpha = 0.6
+  ) +
+  geom_sf(
+    # adding well information/plotting the wells
+    data = wells,
+    aes(color = aquifer_name), # coloring wells by aquifer name
+    size = 1 # making the points smaller
+  ) +
+  scale_color_brewer(palette = "Dark2") + # making the points darker so they show up better
+  geom_sf_label(
+    # adding aquifer labels
+    data = filtered_aquifers,
+    aes(label = NAME, geometry = st_centroid(geometry)),
+    stat = "sf_coordinates",
+    color = "black", # color of the outline
+    size = 3, # making the text smaller
+    alpha = 0.5, # text box opacity
+  ) +
+  annotation_scale(
+    # adding a scale bar
+    location = "tl", # top left location
+    width_hint = 0.1, # making scale bar narrower so it doesn't take up as much room
+    pad_x = unit(0.5, "cm"), # adding space between the top edge of the plot and the scale bar
+    pad_y = unit(0.4, "cm") # adding space between the left edge of the plot and the scale bar
+  ) +
+  annotation_north_arrow(
+    # adding a north arrow
+    style = north_arrow_orienteering(), # specifying north arrow type/design
+    location = "tl", # top left location
+    height = unit(0.1, "npc"), #making the north arrow shorter to take up less room
+    width = unit(0.05, "npc"), # making the north arrow narrower
+    pad_x = unit(0.85, "cm"), # adding space between left edge of plot and north arrow, centering underneath scale bar
+    pad_y = unit(0.8, "cm") # adding space between top edge of plot and north arrow, ensuring underneath scale bar
+  ) +
+  coord_sf(
+    # cropping the plot to the edge of the data frame
+    xlim = c(co_bbox["xmin"] + 0.31, co_bbox["xmax"] - 0.32),
+    ylim = c(co_bbox["ymin"] + 0.21, co_bbox["ymax"] - 0.21)
+  ) +
+  theme_bw() + # setting a b&w theme to get rid of grey background
+  labs(
+    # changing labels for x/y axes, title, and legend titles
+    x = "Longitude",
+    y = "Latitude",
+    title = "Geologic Map of Colorado with Monitoring Wells (and Aquifers)",
+    fill = "Major Rock Type",
+    color = "Aquifer/Wells"
+  ) +
+  theme(
+    # customizing the plot
+    plot.title = element_text(hjust = 0.5, size = 12, face = "bold"), # centering, sizing, and bolding title
+    axis.title = element_text(size = 11, face = "bold"), # sizing and bolding axis titles
+    legend.title = element_text(size = 10, face = "bold"), # sizing and bolding legend titles
+    axis.text = element_text(size = 9), # sizing axis text
+    legend.text = element_text(size = 9) # sizing legend text
+  ) +
+  guides(fill = guide_legend(order = 1), color = guide_legend(order = 2)) # setting the order of the legend so that major rock type comes first
+
+```
+
+## Plot 2: Mean Change in Water Levels Over Time
+@fig-2 displays mean yearly water level change from 1980-2020 for the six aquifers shown in @fig-1. All of the aquifers experienced both gains and losses over time, but the High Plains aquifer, which is the largest on the map, experiences the most dramatic loss of water level by 2020, losing 23.15 feet of water over 40 years. The Paradox aquifer, meanwhile, gained 9.95 feet of water in those same years; however, it is notable that the Paradox aquifer only has 1 monitoring well, so that data comes from a single well over 40 years. The most dramatic year-to-year fluctations occur in the Piceance Basin, with the water level from 1990 to 1991 increasing by 13.66 feet and the water level from 1993 to 1994 decreasing by 17.31 feet; water level then increases by 12.97 feet between 1994 and 1995. In the Denver Basin, there is a steady decrease in water level between 1980 and 2003, then the aquifer turns a corner and water level increases 7.62 feet between 2006-2007. This steady decrease was likely a function of population growth increasing the demand for water, groundwater pumping, variable precipitation, and drought (@https://doi.org/10.1111/1752-1688.12755). By 2020, the water level in the Denver Basin had increased 4.54 feet--a positive sign for the 2.5+ million people who live in the area. Unfortunately, this year (2026)'s historically low snowpack and winter precipitation totals will likely contribute to further aquifer depletion in the coming year.
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-2
+#| fig-height: 6
+#| fig-width: 10
+#| fig-cap: Figure showing change in water level over time in the six Colorado aquifers from Figure 1. The black dashed line represents no change in water level, the point size corresponds to number of wells, and the color corresponds to aquifer name.
+
+# making a new dataframe with mean water levels and the differences between the yearly mean and the first year's mean
+water_levels_mean <- water_levels |>
+  mutate(year = year(Time)) |> # pulling the year from the Time column
+  summarize(
+    .by = c(SiteNo, aquifer_name, year), # grouping by aquifer, Site Number and new year column
+    annual_water_level.ft = mean(water_level.ft, na.rm = TRUE)
+  ) |>
+  group_by(SiteNo, aquifer_name) |>
+  mutate(
+    # add a column calculating the difference between each year's mean and the original mean water level
+    initial_water_level.ft = annual_water_level.ft[year == min(year)], # original water level
+    change_in_water_level.ft = annual_water_level.ft - initial_water_level.ft # change in water level
+  ) |>
+  group_by(year, aquifer_name) |>
+  summarize(
+    mean_change_in_water_level.ft = mean(
+      # calculate average change in water level per aquifer per year
+      change_in_water_level.ft,
+      na.rm = TRUE
+    ),
+    n_wells = n() # counting how many wells contributed to the overall aquifer average each year
+  )
+
+# filtering out NA values
+water_levels_mean <- water_levels_mean |>
+  filter(!is.na(aquifer_name))
+
+# plotting the plot
+water_levels_mean |>
+  ggplot() +
+  aes(
+    # mapping aesthetics
+    x = year,
+    y = mean_change_in_water_level.ft,
+    size = n_wells, # sizing according to how many wells were counted in the average
+    color = aquifer_name # coloring by aquifer name to distinguish between them
+  ) +
+  scale_size_continuous(breaks = c(1, 30, 60, 90, 120, 150)) +
+  # scale_size_area(n.breaks = 6, max_size = 6) +
+  geom_point() + # adding points
+  scale_color_brewer(palette = "Paired") + # using a colorblind friendly palette
+  geom_line(
+    # adding lines
+    inherit.aes = FALSE, # changing the aesthetics so size doesn't carry over to the line width
+    data = water_levels_mean, # setting the dataframe to pull data from
+    aes(x = year, y = mean_change_in_water_level.ft, color = aquifer_name) # same parameters as original aesethetic but without the size category; tried to make size only a geom_point aesthetic but it said it couldn't "find" the n_wells column in that dataset
+  ) +
+  geom_hline(
+    # adding a dashed horizontal line with a y intercept of 0 to highlight what "no change" would look like
+    aes(yintercept = 0, linetype = "No Change (0 ft)"), # putting these inside the aesthetics so they can be mapped to a legend entry
+    linewidth = 1, # setting linewidth outside of aes so it does NOT get mapped to a legend entry
+  ) +
+  scale_linetype_manual(values = c("No Change (0 ft)" = "longdash")) +
+  theme_bw() + # black and white theme to get rid of grey background
+  labs(
+    # changing labels for x/y axes, title, and legend titles
+    x = "Year",
+    y = "Change in Water Level (ft)",
+    title = "Change in Water Level per Year\nin Six Colorado Aquifers",
+    color = "Aquifer Name",
+    size = "Number of Wells",
+    linetype = "Reference"
+  ) +
+  theme(
+    # customizing the plot
+    plot.title = element_text(hjust = 0.5, size = 12, face = "bold"), # centering, sizing, and bolding title
+    axis.title = element_text(size = 11, face = "bold"), # sizing and bolding axis titles
+    legend.title = element_text(size = 10, face = "bold"), # sizing and bolding legend titles
+    axis.text = element_text(size = 9), # sizing axis text
+    legend.text = element_text(size = 9) # sizing legend text
+  )
+```
+
+## Plot 3: Water Level Change of Individual Wells
+@fig-3 shows the same six Colorado aquifers as in @fig-1 and @fig-2, but this time also shows the 40-year water level difference in each individual monitoring wells across the state. The forty year water level difference ranges from -67.67 feet to +71.71 feet across different wells--with one outlier in the Piceance Basin at +244.30 feet--and the average forty year difference across all wells is -7.77 feet. Individual aquifer average difference per year ranges from -17.33 to +14.21 feet: 
+                              High Plains: -17.33;
+                              San Luis: -6.51;
+                              Denver: +2.25;
+                              Paradox: +7.01;
+                              San Juan: -6.71;
+                              Piceance: +14.21.
+Overall, drought conditions in Colorado fluctuate, but seem to be becoming more serious over time. Additionally, this year's exceptionally low snowpack and limited precipitation will probably have lasting impacts on the state's water supply, possibly for years to come. 
+
+```{r}
+#| message: false
+#| warning: false
+#| label: fig-3
+#| fig-height: 6
+#| fig-width: 10
+#| fig-cap: Figure showing six Colorado aquifers and the change in well water levels over the last forty years in those aquifers; the aquifers are separated by color while the forty year difference (in feet) in well water level is a greyscale from white (lowest, a.k.a highest decrease in water level) to black (highest increase in water level). The red points represent wells with no data.
+
+# new df with water level averages in the 1980s per well
+water_level_1980s <- water_levels |>
+  mutate(year = year(Time)) |> # pulling out year from Time column
+  filter(year >= 1980 & year < 1990) |> # filtering between 1980-1990
+  summarize(
+    # summarizing by well and averaging water level
+    .by = c(SiteNo),
+    water_level_1980s = mean(water_level.ft, na.rm = TRUE)
+  )
+
+
+# new df with water level averages in the 2010s per well
+water_level_2010s <- water_levels |>
+  mutate(year = year(Time)) |> # pulling out year from Time column
+  filter(year >= 2010 & year < 2020) |> # filtering between 2010-2020
+  summarize(
+    # summarizing by well and averaging water level
+    .by = SiteNo,
+    water_level_2010s = mean(water_level.ft, na.rm = TRUE)
+  )
+
+# making a new dataframe to be able to put only corresponding aquifer data back into wells_w_water_level_diffs df
+well_info <- water_levels |>
+  select(SiteNo, aquifer_name) |> # keep SiteNo and aquifer_name
+  distinct() # only the unique combos to remove duplicates and ensure smooth joining
+
+wells_info <- wells |> # making new df with just SiteNo and geometry of wells for plot
+  select(SiteNo, geometry)
+
+# adding aquifer data back in, joined by SiteNo
+wells_w_water_level_diffs <- left_join(
+  water_level_1980s,
+  water_level_2010s,
+  by = "SiteNo"
+) |>
+  left_join(well_info, by = "SiteNo") |>
+  left_join(wells_info, by = "SiteNo") # adding the geometry data back in from the wells_info df which came from the well df
+
+wells_w_water_level_diffs <- wells_w_water_level_diffs |>
+  mutate(
+    forty_yr_diff = water_level_2010s - water_level_1980s
+  )
+
+# calculating average water level gain/drop over forty year
+averages <- wells_w_water_level_diffs |>
+  summarize(
+    .by = "aquifer_name",
+    mean_per_aquifer = mean(forty_yr_diff)
+  )
+
+
+# plotting the plot
+states |>
+  filter(name == "Colorado") |> # filtering states to only Colorado
+  ggplot() + # making the plot frame
+  geom_sf(
+    # adding counties in Colorado geometries; these are the polygons
+    data = counties_co,
+    aes(geometry = geom),
+    color = "black",
+    fill = "white",
+  ) +
+  geom_sf_text(
+    # adding county names in Colorado that correspond to the polygons in the layer above
+    data = counties_co,
+    aes(label = county), # setting the label to be county
+    size = 2, # making the text smaller
+    alpha = 0.5 # setting the text to be a little transparent so they're easier to ignore/the plot is less busy
+  ) +
+  geom_sf(
+    data = filtered_aquifers, # plotting only aquifers with monitoring wells
+    aes(geometry = geometry, fill = NAME), # setting the geometry to be the geometry column, filling (color fill) by name
+    alpha = 0.75 # setting opacity
+  ) +
+  geom_sf(
+    # plotting differences in well water level from 1980-2020
+    data = wells_w_water_level_diffs, # setting dataframe to pull data from
+    aes(geometry = geometry, color = forty_yr_diff) # setting geometry to be the geometry column, and the color to be the difference between 1980s average and 2010s average
+  ) +
+  scale_color_gradient(
+    # customizing the color gradient
+    low = "#ffffff", # making the low white
+    high = "#000000", # making the high black
+    limits = c(-50, 50), # setting the lower and upper limits of the scale
+    #midpoint = 0, # not necessary if not doing gradient2 since it is a continuous scale
+    na.value = "red" # setting the well locations with no data to be red points
+  ) +
+  geom_sf_label(
+    # adding aquifer labels
+    data = filtered_aquifers, # setting the dataframe to pull data frame
+    aes(label = NAME, fill = NAME), # labeling the aquifers and filling the label with a color according to its name
+    color = "black", # color of the outline
+    size = 3, # making the text smaller
+    alpha = 0.75, # text box opacity
+    show.legend = FALSE, # removing legend from this so that the aquifer only has one entry
+  ) +
+  scale_fill_brewer(palette = "Set2") + # using colorblind friendly palette
+  guides(color = guide_colorsteps(show.limits = TRUE)) + # showing upper and lower limit of scale
+  annotation_scale(
+    # adding a scale bar
+    location = "tl", # top left location
+    width_hint = 0.1, # making scale bar narrower so it doesn't take up as much room
+    pad_x = unit(0.5, "cm"), # adding space between the top edge of the plot and the scale bar
+    pad_y = unit(0.4, "cm") # adding space between the left edge of the plot and the scale bar
+  ) +
+  annotation_north_arrow(
+    # adding a north arrow
+    style = north_arrow_orienteering(), # specifying north arrow type/design
+    location = "tl", # top left location
+    height = unit(0.07, "npc"), #making the north arrow shorter to take up less room
+    width = unit(0.035, "npc"), # making the north arrow narrower
+    pad_x = unit(0.85, "cm"), # adding space between left edge of plot and north arrow, centering underneath scale bar
+    pad_y = unit(0.8, "cm") # adding space between top edge of plot and north arrow, ensuring underneath scale bar
+  ) +
+  coord_sf(
+    # cropping the plot to the edge of the data frame
+    xlim = c(co_bbox["xmin"] + 0.31, co_bbox["xmax"] - 0.32),
+    ylim = c(co_bbox["ymin"] + 0.21, co_bbox["ymax"] - 0.21)
+  ) +
+  theme_bw() +
+  labs(
+    # changing labels for x/y axes, title, and legend titles
+    x = "Latitude (degrees)",
+    y = "Longitude (degrees)",
+    title = "Change in Well Water Level Over 40 Years\nin Six Colorado Aquifers",
+    color = "Forty Year Difference (ft)",
+    fill = "Aquifer"
+  ) +
+  theme(
+    # customizing the plot
+    plot.title = element_text(hjust = 0.5, size = 12, face = "bold"), # centering, sizing, and bolding title
+    axis.title = element_text(size = 11, face = "bold"), # sizing and bolding axis titles
+    legend.title = element_text(size = 10, face = "bold"), # sizing and bolding legend titles
+    axis.text = element_text(size = 9), # sizing axis text
+    legend.text = element_text(size = 9) # sizing legend text
+  )
+
+```
+
+
+# References
+
+::: {#refs}
+:::

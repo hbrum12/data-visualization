@@ -1,0 +1,209 @@
+---
+title: "TITLE"
+subtitle: "SUBTITLE"
+author: "AUTHOR"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+# load packages
+library(tidyverse)
+library(stars)
+library(patchwork)
+library(ggstar)
+library(cowplot)
+library(magick)
+# load script files
+```
+
+# Data
+
+```{r}
+# load data
+#| message: false
+#| warning: false
+
+nhl_teams <- read_csv("data/Hockey_data.csv")
+nhl_playoffs <- read_csv("data/nhlplayoffs.csv")
+shark_attacks <- readxl::read_excel("data/GSAF5.xlsx")
+```
+
+# Manipulate Data to be Useful
+```{r}
+sjs_reg_season <- nhl_teams |>
+  filter(Name == "San Jose Sharks")
+
+sjs_playoffs <- nhl_playoffs |> filter(team == "San Jose Sharks")
+
+shark_attacks_summary <- shark_attacks |>
+  mutate(year = as.numeric(Year)) |>
+  filter(year >= 1991 & year <= 2011) |>
+  summarize(.by = year, n = n()) |>
+  mutate(total = "Shark Attacks")
+```
+
+# Plots {#sec-plots}
+
+```{r}
+#| fig-height: 6
+#| fig-width: 10
+# Calculate scaling factor to map shark attacks onto the Win % scale
+scale_colors <- c("San Jose Sharks" = "cyan", "Shark Attacks" = "magenta")
+
+scale_factor <- max(shark_attacks_summary$n) / max(sjs_reg_season$`Win %`)
+
+plot1 <- ggplot() +
+  geom_line(
+    data = sjs_reg_season,
+    aes(x = Year, y = `Win %`, color = Name),
+    linewidth = 2,
+    alpha = 0.5
+  ) +
+  geom_line(
+    data = shark_attacks_summary,
+    aes(x = year, y = n / scale_factor, color = total),
+    linewidth = 2,
+    alpha = 0.5
+  ) +
+  geom_star(
+    data = sjs_reg_season,
+    aes(x = Year, y = `Win %`),
+    fill = "blue",
+    color = "blue",
+    size = 3.5
+  ) +
+  geom_star(
+    data = shark_attacks_summary,
+    aes(x = year, y = n / scale_factor), # scale DOWN to Win % range
+    fill = "red",
+    color = "red",
+    size = 3.5
+  ) +
+  scale_y_continuous(
+    name = "Win %",
+    sec.axis = sec_axis(
+      ~ . * scale_factor, # scale BACK UP for the label
+      name = "Shark Attacks"
+    )
+  ) +
+  scale_color_manual(values = scale_colors) +
+  labs(
+    title = "Are the Sharks (NHL) Causing (Real) Shark Attacks?",
+    subtitle = "San Jose Sharks Season Win % and Shark Attacks by Year 1991-2011",
+    x = "Year",
+    color = "Which Shark?"
+  ) +
+  theme(
+    plot.background = element_rect(color = "white", fill = NA),
+    panel.background = element_rect(color = "white", fill = NA),
+    panel.grid.major.x = element_line(color = "yellow"),
+    panel.grid.major.y = element_line(color = "orange"),
+    axis.text = element_text(color = "green", size = 17),
+    plot.title = element_text(
+      hjust = 0.5,
+      color = "magenta",
+      size = 20,
+      face = "bold"
+    ),
+    plot.subtitle = element_text(
+      hjust = 0.5,
+      color = "cyan",
+      size = 19,
+      face = "bold"
+    ),
+    axis.title = element_text(color = "pink", size = 18),
+    legend.position = "inside", # place legend inside plot
+    legend.justification = c("right", "bottom"), # right justify legend
+    legend.position.inside = c(.99, .01), # set position relative to top right
+    legend.background = element_rect(
+      color = "yellow",
+      fill = "red"
+    ),
+    legend.title = element_text(size = 17),
+    legend.text = element_text(size = 16),
+    legend.key = element_rect(fill = "yellow")
+  )
+
+ggdraw() +
+  draw_image("images/jaws.png", scale = 1.1) +
+  draw_plot(plot1) +
+  draw_image(
+    "images/shark_attack.png",
+    x = 0.18,
+    y = -0.05,
+    width = 0.62,
+    height = 0.62
+  ) +
+  draw_image(
+    "images/sharks_logo.png",
+    x = 0.05,
+    y = 0.5,
+    width = 0.4,
+    height = 0.4
+  ) +
+  draw_image(
+    "images/bruce.png",
+    x = 0.6,
+    y = 0.35,
+    width = 0.3,
+    height = 0.3
+  ) +
+  draw_label(
+    "Only Time Will Tell...>:)",
+    x = 0.5,
+    y = 0.85,
+    size = 23,
+    color = "red",
+    fontface = "bold"
+  )
+```
+
+# References
+
+::: {#refs}
+:::

@@ -1,0 +1,1090 @@
+---
+title: "Willow Creek Anticline Data Visualization"
+subtitle: "Plotting Assignment #8, #9, and #10: Research Data Plots"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+nocite: '@*'
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+# install packages that aren't already installed
+#install.packages(c("tidyverse","ggpspatial",s"sf","stars","rnaturalearth","rnaturalearthdata","patchwork","ggstar","elevatr","terra","tidyterra","cowplot","gt"))
+
+# load packages
+library(tidyverse)
+library(ggspatial)
+library(sf)
+library(stars)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(patchwork)
+library(ggstar)
+library(elevatr)
+library(terra)
+library(tidyterra)
+library(cowplot)
+library(gt)
+```
+
+# Geologic Map of Choteau, MT with Willow Creek Anticline Callout
+
+## Data
+```{r} 
+#| label: load-data
+# load line layer representing contacts and faults
+choteau_contacts_faults <- read_sf(
+  "data/NGMDB_GeMS_4405-2/GeMS_shapefiles/ContactsAndFaults.shp"
+) |>
+  st_transform("WGS84") # transform to WGS84 coordinate system
+
+# load polygon layer representing the distribution of geologic map units
+choteau_map_units <- read_sf(
+  "data/NGMDB_GeMS_4405-2/GeMS_shapefiles/MapUnitPolys.shp"
+) |>
+  st_transform("WGS84") # transform to WGS84 coordinate system
+
+# load description of map units table
+# AreaFillRGB read as character to preserve "xxx,xxx,xxx" format (prevents conversion to scientific notation)
+choteau_map_units_desc <- read_csv(
+  "data/NGMDB_GeMS_4405-2/GeMS_shapefiles/DescriptionOfMapUnits.csv",
+  col_types = cols(AreaFillRGB = col_character())
+)
+
+# disable spherical geometry to allow planar centroid calculations
+sf_use_s2(FALSE)
+
+# load all us states from rnaturalearth
+states <- ne_states(country = "United States of America") |>
+  st_as_sf() # convert to sf object
+
+# filter to montana only
+mt <- states |> filter(name == "Montana")
+
+# load montana county boundaries from maps package
+counties_mt <- maps::map("county", fill = TRUE) |>
+  st_as_sf() |>
+  tidyr::separate(ID, into = c("state", "county"), sep = ",") |> # split ID into state and county columns
+  st_as_sf() |>
+  filter(state == "montana") |> # keep only montana counties
+  st_transform("WGS84") # transform to WGS84 coordinate system
+
+# compute montana bounding box
+mt_bbox <- mt |>
+  st_bbox()
+
+# expand montana bounding box by 0.5 degrees on each side for context/to see the outline better in the map
+mt_bbox_vector <- mt_bbox |> as.vector() # convert bbox to plain numeric vector to expand
+
+mt_xmin_expanded <- mt_bbox_vector[1] - 0.5 # expand west edge
+mt_ymin_expanded <- mt_bbox_vector[2] - 0.5 # expand south edge
+mt_xmax_expanded <- mt_bbox_vector[3] + 0.5 # expand east edge
+mt_ymax_expanded <- mt_bbox_vector[4] + 0.5 # expand north edge
+
+mt_bbox_expanded <- st_bbox(
+  c(
+    xmin = mt_xmin_expanded,
+    xmax = mt_xmax_expanded,
+    ymin = mt_ymin_expanded,
+    ymax = mt_ymax_expanded
+  ),
+  crs = st_crs(4326) # set CRS to WGS84
+)
+
+# calculate choteau quadrangle bounding box from map unit polygons
+choteau_bbox <- choteau_map_units |> st_bbox()
+
+# define field site coordinates for willow creek anticline
+wca_coords <- tibble(
+  Site = c(
+    "Willow Creek Anticline Camp Site",
+    "'79 Hatchling Nest Stratigraphic Section",
+    "Rainbow Mountain Stratigraphic Section"
+  ),
+  Longitude = c(-112.41743, -112.42001, -112.426692),
+  Latitude = c(47.81059, 47.81182, 47.80940)
+)
+
+# convert wca coordinates to sf and calculate bounding box
+wca_bbox <- wca_coords |>
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) |> # convert to sf point object
+  st_bbox() # calculate bounding box
+
+# expand wca bounding box to add context around the field sites
+wca_bbox_vector <- wca_bbox |> as.vector() # convert bbox to plain numeric vector to expand
+
+wca_xmin_expanded <- wca_bbox_vector[1] - 0.007 # expand west edge
+wca_ymin_expanded <- wca_bbox_vector[2] - 0.004 # expand south edge
+wca_xmax_expanded <- wca_bbox_vector[3] + 0.0075 # expand east edge
+wca_ymax_expanded <- wca_bbox_vector[4] + 0.005 # expand north edge
+
+wca_bbox_expanded <- st_bbox(
+  c(
+    xmin = wca_xmin_expanded,
+    xmax = wca_xmax_expanded,
+    ymin = wca_ymin_expanded,
+    ymax = wca_ymax_expanded
+  ),
+  crs = st_crs(4326) # set CRS to WGS84
+)
+```
+
+## Manipulating Data to Make Useful Dataframes
+
+```{r}
+#| label: data-manipulation
+# join color data from description table to map units using shared Label column as the 'by'
+choteau_map_units_wcolor <- choteau_map_units |>
+  left_join(
+    choteau_map_units_desc |>
+      select(-MapUnit) |> # drop duplicate MapUnit column from description table
+      filter(!is.na(Label)), # remove rows with no Label value
+    by = "Label" # join by Label column
+  )
+
+# convert RGB string (xxx,xxx,xxx) to hex color code for use in ggplot
+choteau_map_units_wcolor <- choteau_map_units_wcolor |>
+  mutate(
+    hex_color = map_chr(
+      # map_chr() transforms its input by applying a function to each element of a list or atomic vector and returning an object of the same length as the input.
+      # applying this function to AreaFillRGB returns a character vector, and the map_chr _chr suffix enforces character output type
+      AreaFillRGB, # input column containing RGB strings from tibble (e.g. "255,0,0")
+      ~ {
+        if (is.na(.x)) {
+          return(NA_character_)
+        } # if no RGB value exists, assign NA to hex_color
+        vals <- as.integer(str_split(.x, ",")[[1]]) # split "xxx,xxx,xxx" by comma into vector of 3 integers
+        rgb(vals[1], vals[2], vals[3], maxColorValue = 255) # convert R, G, B integers to hex code (e.g. "#FF0000") using rgb() function
+      }
+    )
+  )
+
+# compute polygon centroids for map unit labels
+# set map projection to montana state plane (epsg 32100) for accurate area calculation
+choteau_centroids <- choteau_map_units_wcolor |>
+  st_transform(32100) |> # project to montana state plane
+  mutate(area = st_area(geometry)) |> # calculate polygon area
+  filter(area > units::set_units(50, km^2)) |> # keep only polygons larger than 50 km2
+  st_point_on_surface() |> # place point guaranteed inside polygon
+  st_transform(st_crs(choteau_map_units_wcolor)) # transform back to original crs
+
+# extract unique label-color pairs as a named vector for scale_fill_manual
+polygon_colors <- choteau_map_units_wcolor |>
+  st_drop_geometry() |> # remove geometry column to work with the data as a plain dataframe
+  filter(!is.na(hex_color)) |> # remove map units that have no associated color
+  distinct(Label, hex_color) |> # keep only unique label-color pairs (one row per map unit)
+  deframe() # convert two-column dataframe to named character vector where Label becomes the name and hex_color becomes the value e.g. c("Kbf" = "#FF0000", "Jn" = "#00FF00"), the required format for scale_fill_manual(values = )
+
+# define colors for each field site star marker
+star_colors <- c(
+  "Willow Creek Anticline Camp Site" = "red", # camp site in red
+  "'79 Hatchling Nest Stratigraphic Section" = "yellow", # 1979 hatchling nest in yellow
+  "Rainbow Mountain Stratigraphic Section" = "blue" # rainbow mountain section in blue
+)
+
+# download elevation raster for the choteau area at zoom level 7 to not overload the map/crash R
+choteau_elev <- get_elev_raster(
+  locations = choteau_map_units_wcolor, # use map units extent to define download area
+  z = 7 # zoom level 7 (coarser resolution, faster download)
+) |>
+  rast() # convert to terra SpatRaster format (spatially referenced surface divided into 3D cells: rows, columns, and layers) so I can plot using geom_spatraster_contour()
+
+# load choteau elevation contour from the National Elevation Dataset at higher resolution for WCA field site plot (unsure how to cite^)
+WCA_elev_contour <- read_sf(
+  "data/VECTOR_Watson_Flats_MT_7_5_Min_Shape/Shape/Elev_Contour.shp"
+) |>
+  st_transform("WGS84") # transform to WGS84 coordinate system
+
+# test elevation contour map
+# ggplot() +
+#   geom_sf(data = choteau_elev_contour, aes(color = ContourEle), linewidth = 0.1)
+```
+
+## Maps and Geologic Maps
+```{r}
+#| label: geologic-map-plots
+#| fig-height: 7
+#| fig-width: 10
+# custom theme based on theme_bw
+my_theme <- theme_bw() +
+  theme(
+    panel.grid = element_blank(), # remove grid lines
+    plot.title = element_text(
+      size = 13,
+      hjust = 0.5, # center title
+      face = "bold"
+    ),
+    plot.subtitle = element_text(size = 12, hjust = 0.5), # center subtitle
+    axis.title = element_text(size = 12, hjust = 0.5, face = "bold"), # bold and center axis titles
+    axis.title.y = element_text(margin = margin(r = 5)), # add small margin to y axis title
+    axis.title.x = element_text(margin = margin(t = 5)),
+    axis.text = element_text(size = 10), # add small margin to x axis title
+    plot.tag = element_text(size = 10, face = "bold") # bold plot tags
+  )
+
+
+# plot 1: map of contiguous united states with montana and choteau highlighted
+plot1 <- ggplot() +
+  geom_sf(
+    data = states |> filter(name != "Hawaii", name != "Alaska"), # filter out non-contiguous states
+    fill = NA # transparent fill
+  ) +
+  geom_sf_text(
+    data = states |>
+      filter(
+        # filter out states with no room for labels
+        name != "Hawaii",
+        name != "Alaska",
+        name != "Rhode Island",
+        name != "Massachusetts",
+        name != "Connecticut",
+        name != "Maryland",
+        name != "District of Columbia",
+        name != "New Jersey",
+        name != "Delaware",
+        name != "Louisiana",
+        name != "Idaho",
+        name != "New Hampshire",
+        name != "North Carolina",
+        name != "Michigan"
+      ),
+    aes(label = postal), # label states with postal codes
+    size = 3
+  ) +
+  geom_sf(
+    data = mt_bbox_expanded |> st_as_sfc(), # convert montana bbox to sfc for plotting
+    color = "black",
+    linewidth = 0.9,
+    fill = NA # transparent fill
+  ) +
+  geom_sf(data = choteau_bbox |> st_as_sfc(), color = "blue", linewidth = 0.5) + # choteau bbox in red
+  geom_sf(data = choteau_map_units_wcolor, aes(fill = hex_color), color = NA) + # geologic map units
+  scale_fill_identity() + # use hex codes directly as fill colors
+  labs(
+    title = "Map of United States with Montana Highlighted",
+    subtitle = "Location of Choteau Marked",
+    x = "Longitude (°W)",
+    y = "Latitude (°N)",
+    tag = "A." # plot tag for composite
+  ) +
+  scale_x_continuous(labels = function(x) paste0(abs(x))) +
+  scale_y_continuous(labels = function(y) paste0(abs(y))) + # remove degrees signs since they're in the axes titles and they make the labels too long
+  guides(y = guide_axis(minor.ticks = TRUE)) +
+  my_theme +
+  theme(
+    plot.tag.position = c(0.05, 0.99) # position tag top left
+  )
+
+plot1
+
+# plot 2: map of montana with choteau area and willow creek anticline highlighted
+plot2 <- ggplot() +
+  geom_sf(data = mt, fill = NA) + # montana state boundary
+  geom_sf(
+    data = counties_mt, # montana county boundaries
+    aes(geometry = geom),
+    color = "black", # black outline
+    fill = "white", # white fill
+  ) +
+  geom_sf(data = choteau_bbox |> st_as_sfc(), color = "blue", linewidth = 1.5) + # choteau bbox in red
+  geom_sf(
+    data = choteau_map_units_wcolor,
+    aes(fill = Label), # fill by geologic unit label
+    color = NA,
+    show.legend = FALSE # hide legend
+  ) +
+  geom_star(
+    data = wca_coords |> filter(Site == "Willow Creek Anticline Camp Site"), # filter to camp site only
+    aes(x = Longitude, y = Latitude),
+    size = 3.5,
+    fill = "red",
+    show.legend = FALSE
+  ) +
+  scale_fill_manual(values = c(polygon_colors)) + # use initialized polygon colors
+  labs(
+    title = "Montana Counties with Choteau Area Highlighted",
+    subtitle = "Star Marks Willow Creek Anticline Location",
+    x = "Longitude (°W)",
+    y = "Latitude (°N)",
+    tag = "B."
+  ) +
+  scale_x_continuous(labels = function(x) paste0(abs(x))) +
+  scale_y_continuous(labels = function(y) paste0(abs(y))) + # remove degrees signs since they're in the axes titles and they make the labels too long
+  my_theme +
+  theme(
+    panel.border = element_rect(color = "black", linewidth = 1.5), # black border around plot
+    plot.tag.position = c(0.05, 0.98) # set position of "A." tag to top left
+  )
+
+plot2
+
+# plot 3 with topography: choteau quadrangle geologic map with contour lines
+plot3_with_topo <- ggplot() +
+  geom_sf(
+    data = choteau_map_units_wcolor,
+    aes(fill = Label), # fill polygons by geologic unit
+    color = NA,
+    show.legend = FALSE
+  ) +
+  geom_sf_text(
+    data = choteau_centroids, # label centroids with map unit codes
+    aes(label = MapUnit), # use the MapUnit column to label the lithologies
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  geom_sf(data = choteau_contacts_faults, linewidth = 0.1) + # geologic contacts and faults
+  scale_fill_manual(values = polygon_colors) + # use initialized polygon colors from df above
+  geom_spatraster_contour(
+    data = choteau_elev, # elevation raster for contour lines
+    breaks = seq(1000, 3000, by = 200), # contour interval every 200m
+    color = "black",
+    linewidth = 0.1,
+    alpha = 0.4 # semi-transparent contours
+  ) +
+  geom_star(
+    data = wca_coords |> filter(Site == "Willow Creek Anticline Camp Site"), # use only WCA camp site for star location
+    aes(x = Longitude, y = Latitude),
+    fill = "red",
+    size = 7,
+    show.legend = FALSE
+  ) +
+  annotation_scale(location = "bl", unit_category = "metric", text_cex = 1) + # add scale bar to bottom left in metric units
+  annotation_north_arrow(
+    # add north arrow to top left of plot and set the height, width, and style (with N letter text size)
+    location = "tl",
+    height = unit(0.075, "npc"), # set height and width relative to size of plot
+    width = unit(0.05, "npc"), # npc is percent of the coordinate system
+    style = north_arrow_orienteering(text_size = 10)
+  ) +
+  coord_sf(
+    # use/crop to the bounding box made above
+    xlim = c(choteau_bbox$xmin + 0.08, choteau_bbox$xmax - 0.08), # trim edges slightly
+    ylim = c(choteau_bbox$ymin + 0.038, choteau_bbox$ymax - 0.038),
+    clip = "on" # clip edges so it's exactly the defined extent
+  ) +
+  labs(
+    # set labels/titles/tag
+    title = "Choteau Quadrangle Geologic Map with Topography",
+    subtitle = "Willow Creek Anticline Field Site Location Marked",
+    x = "Longitude (°W)",
+    y = "Latitude (°N)",
+    tag = "C."
+  ) +
+  scale_x_continuous(labels = function(x) paste0(abs(x))) +
+  scale_y_continuous(labels = function(y) paste0(abs(y))) + # remove degrees signs since they're in the axes titles and they make the labels too long
+  my_theme +
+  theme(
+    panel.border = element_rect(color = "blue", linewidth = 1), # blue border for emphasis/connection to previous plot
+    plot.tag.position = c(0.05, 0.98) # set plot tag location
+  )
+
+plot3_with_topo
+
+# plot 3 for composite: simplified choteau map without topography for composite layout
+plot3_for_composite <- ggplot() +
+  geom_sf(
+    data = choteau_map_units_wcolor,
+    aes(fill = Label),
+    color = NA,
+    show.legend = FALSE
+  ) +
+  geom_sf_text(
+    data = choteau_centroids,
+    aes(label = MapUnit),
+    size = 3, # smaller text for composite layout
+    color = "black"
+  ) +
+  geom_sf(data = choteau_contacts_faults, linewidth = 0.05) + # thinner lines for composite
+  geom_star(
+    data = wca_coords |> # set df
+      filter(Site == "Willow Creek Anticline Camp Site"), # filter to just the camp site so it's only 1 star
+    aes(x = Longitude, y = Latitude), # add coordinates from the df
+    fill = "red", # red fill
+    size = 6, # size of star
+    show.legend = FALSE # remove from legend (so there is no legend)
+  ) +
+  scale_fill_manual(values = polygon_colors) + # set the colors to be from the df I made with HEX color codes for each type of lithology
+  annotation_scale(
+    # add scale bar
+    location = "bl", # bottom left
+    unit_category = "metric", # metric units
+    text_face = "bold",
+    text_cex = 0.8 # bold scale number text
+  ) +
+  annotation_north_arrow(
+    # add north arrow
+    location = "tl", # top left
+    height = unit(0.075, "npc"), # set height and width relative to size of plot
+    width = unit(0.05, "npc"),
+    style = north_arrow_orienteering(text_size = 10)
+  ) +
+  coord_sf(
+    xlim = c(choteau_bbox$xmin + 0.08, choteau_bbox$xmax - 0.08),
+    ylim = c(choteau_bbox$ymin + 0.038, choteau_bbox$ymax - 0.038),
+    clip = "on"
+  ) +
+  labs(
+    title = "Choteau Quadrangle Geologic Map",
+    subtitle = "Star Marks Willow Creek Anticline Field Area Location",
+    x = "Longitude (°W)",
+    y = "Latitude (°N)",
+    tag = "C."
+  ) +
+  scale_x_continuous(labels = function(x) paste0(abs(x))) +
+  scale_y_continuous(labels = function(y) paste0(abs(y))) + # remove degrees signs since they're in the axes titles and they make the labels too long
+  my_theme +
+  theme(
+    panel.border = element_rect(color = "blue", linewidth = 1.5),
+    plot.tag.position = c(0.05, 0.98)
+  )
+
+plot3_for_composite
+
+# plot 4: zoomed in map of willow creek anticline field area with all site locations and topo lines
+plot4 <- ggplot() + # make new plot4
+  geom_sf(
+    # add color for the lithology
+    data = choteau_map_units_wcolor,
+    aes(fill = Label),
+    color = NA,
+    show.legend = FALSE
+  ) +
+  geom_sf(
+    # add contact and fault lines
+    data = choteau_contacts_faults,
+    linewidth = 0.05
+  ) + # thinner lines for composite
+  geom_sf(
+    # add contour/elevation lines
+    data = WCA_elev_contour,
+    color = "black",
+    linewidth = 0.1,
+    alpha = 0.5
+  ) +
+  geom_sf_text(
+    # add contour/elevation labels
+    data = WCA_elev_contour,
+    aes(label = ContourEle),
+    size = 2.5 # make text small for composite plot
+  ) +
+  geom_star(
+    data = wca_coords, # all wca site coordinates
+    aes(x = Longitude, y = Latitude, fill = Site), # fill by site name
+    size = 5,
+    color = "black",
+    starstroke = 0.5 # thinner star outline
+  ) +
+  scale_fill_manual(
+    values = c(polygon_colors, star_colors), # combine polygon and star colors
+    breaks = names(star_colors), # only show star sites in legend
+    name = "Site" # set name for legend
+  ) +
+  annotation_scale(location = "bl", unit_category = "metric", text_cex = 0.75) +
+  annotation_north_arrow(
+    location = "tl",
+    height = unit(0.075, "npc"),
+    width = unit(0.05, "npc"),
+    style = north_arrow_orienteering(text_size = 8)
+  ) + #
+  coord_sf(
+    # zoom to wca extent
+    xlim = c(wca_bbox_expanded$xmin, wca_bbox_expanded$xmax),
+    ylim = c(wca_bbox_expanded$ymin, wca_bbox_expanded$ymax),
+    clip = "on"
+  ) +
+  labs(
+    # add title, subtitle, fill label for legend, and tag
+    title = "Willow Creek Anticline Field Area",
+    subtitle = "Camp and Stratigraphic Section Locations Marked",
+    fill = "Site",
+    tag = "D.",
+    x = "Longitude (°W)",
+    y = "Latitude (°N)"
+  ) +
+  scale_x_continuous(
+    breaks = seq(-112.432, -112.412, 0.005), # set axis breaks/labels to show better the coordinates
+    labels = function(x) paste0(abs(x))
+  ) +
+  scale_y_continuous(labels = function(y) paste0(abs(y))) + # remove degrees signs since they're in the axes titles and they make the labels too long
+  my_theme +
+  guides(
+    fill = guide_legend(
+      override.aes = list(size = 3) # adjust until it looks right
+    )
+  ) +
+  theme(
+    legend.position = "inside", # place legend inside plot
+    legend.justification = c("right", "top"), # right justify legend
+    legend.position.inside = c(.99, .99), # set position relative to top right
+    legend.box.just = "right", # right justify legend boxes
+    legend.box.background = element_rect(
+      color = "black",
+      fill = "white",
+      linewidth = 0.2 # thin black border around legend box
+    ),
+    legend.box.margin = margin(0.2, 0.2, 0.2, 0.2), # margin around legend box
+    legend.margin = margin(0.2, 0.2, 0.2, 0.2), # margin inside legend box
+    legend.key.size = unit(0.4, "cm"), # spacing between legend keys
+    legend.key = element_blank(), # get rid of grey background for the star icons
+    legend.title = element_blank(), #get rid of legend title since stars are self-explanatory (and mentioned in subtitle)
+    # legend.title = element_text(
+    #   hjust = 0.5,
+    #   size = 9,
+    #   face = "bold",
+    #   margin = margin(b = 1.5)
+    # ), # centered bold legend title, set bottom margin to be smaller
+    legend.text = element_text(size = 8), # small legend text
+    plot.tag.position = c(0.05, 0.99), # set tag location
+    panel.border = element_rect(color = "red", linewidth = 1.5) # add red plot border
+  )
+
+plot4
+```
+
+## Composite Plots 1-4
+@fig-1 is a composite plot of 4 maps that zoom progressively; see caption for details. Notably, as shown in panel D, the Willow Creek Anticline field area covers a relatively small extent--approximately 1.3 square kilometers. However, despite being small and comprised of entirely Upper Cretaceous Two Medicine Formation material, it is structurally complex. This complexity can be seen in the topographic contours (contour interval = 20 ft). @tbl-1 explains all the lithologies shown in panel C with their colors, map unit codes, unit names, ages, and descriptions with associated sources.
+```{r}
+#| label: fig-1
+#| fig-height: 8
+#| fig-width: 10
+#| fig-cap: "This figure is a composite plot of 4 maps that zoom in progressively, showing A) the location of Montana in the US, and Choteau in Montana; B) the location of Choteau and the Willow Creek Anticline (marked with a red star) in Montana; C) the location of the Willow Creek Anticline within the Choteau quadrangle geologic map (marked with a red star again); and D) the coordinates of 3 locations of interest at the Willow Creek Anticline: the camp site, the '79 Hatchling Nest Stratigraphic Section, and the Rainbow Mountain Stratigraphic Section."
+# looks weird in plot viewer but renders OK
+composite_plot <- ggdraw() + # add all plots with x and y coordinates (relative) so they all fit, 2 next to each other/stacked (2 rows + 2 columns)
+  draw_plot(plot1, x = 0, y = 0.5, width = 0.5, height = 0.5) +
+  draw_plot(plot2, x = 0.5, y = 0.5, width = 0.5, height = 0.5) +
+  draw_plot(plot3_for_composite, x = 0, y = 0, width = 0.5, height = 0.5) +
+  draw_plot(plot4, x = 0.5, y = 0, width = 0.5, height = 0.5)
+
+composite_plot # plot composite plot
+```
+
+## Failed Composite Plot
+```{r}
+## below code does not work in html rendering, makes the margins between plots huge
+# composite_plot <- ((plot1 + plot2) &
+#   theme(plot.margin = margin(0, 0, 0, 0, "pt"))) /
+#   ((plot3_for_composite + plot4) +
+#     plot_layout(widths = 1.75, heights = 1) &
+#     theme(plot.margin = margin(0, 0, 0, 0, "pt")))
+
+# composite_plot <- composite_plot &
+#   labs(x = NULL, y = NULL) &
+#   theme(plot.title = element_blank())
+
+# composite_plot <- composite_plot +
+#   plot_annotation(
+#     title = "Maps of United States, Montana,\nChoteau, and Willow Creek Anticline Field Area",
+#     tag_levels = "A",
+#     theme = theme(
+#       plot.title = element_text(
+#         hjust = 0.5,
+#         size = 12,
+#         face = "bold",
+#         margin = margin(b = 0, unit = "pt")
+#       ),
+#       plot.background = element_rect(
+#         color = "black",
+#         linewidth = 1.5,
+#         fill = NA
+#       )
+#     )
+#   )
+
+# composite_plot <- composite_plot &
+#   theme(plot.tag.position = c(0.15, 1.01))
+# composite_plot
+
+# # labeled_plot <- ggdraw(composite_plot) +
+# #   draw_label(
+# #     "Longitude",
+# #     x = 0.5,
+# #     y = 0.02,
+# #     hjust = 0.5,
+# #     size = 11,
+# #     fontface = "bold"
+# #   ) +
+# #   draw_label(
+# #     "Latitude",
+# #     x = 0.01,
+# #     y = 0.5,
+# #     hjust = 0.5,
+# #     size = 11,
+# #     fontface = "bold",
+# #     angle = 90
+# #   )
+
+# # labeled_plot
+```
+
+# Table with Different Lithologies
+```{r}
+#| label: tbl-1
+#| tbl-cap: Table showing all lithology units for the Choteau Quadrangle geologic map (Figure 1C).
+# This chunk partially from Claude (AI) because I didn't know how to make tables but I thought it would be useful to have a table/legend for the lithologies of Choteau area that I plot above (even though the WCA is only one kind of lithology--Upper Cretaceous Two Medicine Fm)
+
+legend_table <- choteau_map_units_wcolor |>
+  st_drop_geometry() |> # remove geometry column
+  distinct(MapUnit, Name, Age, Description, hex_color) |> # keep only unique rows
+  filter(!is.na(hex_color)) |> # remove rows without color
+  arrange(Age) |> # sort by age
+  mutate(Color = "") |> # add empty column for color swatches
+  gt() |> # convert to gt table (like ggplot for tables)
+  tab_header(title = "Geologic Map Units") |> # add table title
+  tab_style(
+    style = cell_fill(color = from_column("hex_color")), # fill color swatch with hex color
+    locations = cells_body(columns = Color) # apply to Color column only
+  ) |>
+  cols_hide(hex_color) |> # hide hex code column from display
+  cols_move_to_start(columns = Color) |> # move color swatch to first column
+  cols_label(
+    # rename column headers
+    Color = "Color",
+    MapUnit = "Unit",
+    Name = "Name",
+    Age = "Age",
+    Description = "Description"
+  ) |>
+  tab_style(
+    style = cell_text(size = px(10)), # set column header text size
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_text(size = px(9)), # set body text size
+    locations = cells_body()
+  ) |>
+  tab_style(
+    style = cell_text(size = px(11)), # set title text size
+    locations = cells_title()
+  ) |>
+  tab_style(
+    style = cell_borders(
+      sides = c("left", "top"), # add left and top borders
+      color = "black",
+      weight = px(0.5) # border thickness
+    ),
+    locations = cells_body() # apply to all body cells
+  )
+
+legend_table # make the table
+```
+
+
+
+# Isotope Contour Plot
+
+## Load Data
+```{r}
+#| label: isotope-data
+# load isotope data from WCA csv prepared
+
+WCA_iso_data <- read_csv(
+  "data/All_CoproData.csv",
+  show_col_types = FALSE
+)
+```
+
+## Manipulate Isotope Data to be more Useful
+
+```{r}
+#| label: iso-error-bars
+#calculating error bars using iso_data
+# summarise isotope data by sample, combining replicates into summary statistics
+WCA_summary_data <- WCA_iso_data |>
+  group_by(Sample_ID) |> # group by sample so each sample gets one summary row
+  summarize(
+    # d13C summary statistics — exclude all-NA groups with if/else
+    mean_d13C = mean(d13C, na.rm = TRUE), # mean carbon isotope value
+    min_d13C = if (all(is.na(d13C))) NA_real_ else min(d13C, na.rm = TRUE), # minimum, NA if no values
+    max_d13C = if (all(is.na(d13C))) NA_real_ else max(d13C, na.rm = TRUE), # maximum, NA if no values
+
+    # d18O summary statistics
+    mean_d18O = mean(d18O, na.rm = TRUE), # mean oxygen isotope value
+    min_d18O = if (all(is.na(d18O))) NA_real_ else min(d18O, na.rm = TRUE), # minimum, NA if no values
+    max_d18O = if (all(is.na(d18O))) NA_real_ else max(d18O, na.rm = TRUE), # maximum, NA if no values
+
+    # ICDES.Anderson temperature estimate summary statistics
+    mean_ICDES = mean(ICDES.Anderson, na.rm = TRUE), # mean temperature estimate
+    min_ICDES = if (all(is.na(ICDES.Anderson))) {
+      # min temperature estimate
+      NA_real_
+    } else {
+      min(ICDES.Anderson, na.rm = TRUE)
+    }, # minimum, remove NA values
+    max_ICDES = if (all(is.na(ICDES.Anderson))) {
+      # max temperaure estimate
+      NA_real_
+    } else {
+      max(ICDES.Anderson, na.rm = TRUE)
+    }, # maximum, remove NA values
+    pcarb = mean(pcarb, na.rm = TRUE), # mean carbonate percentage
+    Instrument = first(Instrument), # instrument is same across replicates, take first
+    Type = first(Type), # sample type is same across replicates, take first
+    Specimen = first(Specimen), # specimen ID is same across replicates, take first
+    Composition = first(Composition), # composition is same across replicates, take first
+
+    .groups = "drop" # ungroup after summarising
+  ) |>
+  left_join(
+    WCA_iso_data |> # count replicates per sample from original data
+      group_by(Sample_ID) |> # group by sample ID
+      summarise(Replicates = n(), .groups = "drop"), # n() counts rows per sample = number of replicates
+    by = "Sample_ID" # join back to summary data by sample ID
+  )
+
+# make a tibble that's only Clumped data by filtering out rows where clumped isotope temp (ICDES.Anderson) is NA
+Clumped <- WCA_summary_data |> filter(!is.na(mean_ICDES))
+```
+
+## Functions for Isotope Contour Plot
+```{r}
+#| label: isotope-functions
+#' convert back and forth between VPDB and VSMOW scale
+#' @return delta value in permil
+convert_vpdb_to_vsmow <- function(d.permil) {
+  d.permil * 1.03092 + 30.92
+}
+convert_vsmow_to_vpdb <- function(d.permil) {
+  (d.permil - 30.92) / 1.03092
+}
+
+# calcualte fractionation factor
+calculate_alpha <- function(temp.C) {
+  temp.K <- 273.15 + temp.C
+  exp(18.03 / temp.K - 32.42 / 1e3)
+}
+
+# convert between delta of CaCO3 and H2O (in VPDB scale)
+#' @param temp.C temperature in Celsius, will be used to calcualte alpha if alpha is not provided
+#' @param alpha fractionation factor
+#' @return delta value in permil
+calculate_d_CaCO3_from_H2O <- function(
+  d_H2O.permil,
+  temp.C,
+  alpha = calculate_alpha(temp.C)
+) {
+  ((d_H2O.permil / 1000 + 1) * alpha - 1) * 1000
+}
+
+calculate_d_H2O_from_CaCO3 <- function(
+  d_CaCO3.permil,
+  temp.C,
+  alpha = calculate_alpha(temp.C)
+) {
+  ((d_CaCO3.permil / 1000 + 1) / alpha - 1) * 1000
+}
+```
+
+  
+## Contour Plot 
+```{r}
+#| label: contour-plot-initiate
+# create a dataframe for the contours
+model_df <-
+  crossing(
+    d_H2O.permil = seq(-16, 16, by = 2), # set the lower and upper bounds of the d18O of water and the step (determines how many steps between the bounds)
+    temp.C = seq(10, 120, by = 1) # set the lower and upper bounds of the temperature and the step
+  ) |>
+  mutate(
+    d_CaCO3.permil = d_H2O.permil |> # make column of carbonate d18O from the d18O water permil column using the functions defined above and the temp.C column as inputs (from 10-120 by increases of 1)
+      convert_vsmow_to_vpdb() |>
+      calculate_d_CaCO3_from_H2O(temp.C)
+  )
+
+# plot the contours
+plot5 <- model_df |>
+  ggplot() +
+  aes(x = temp.C, y = d_CaCO3.permil, group = factor(d_H2O.permil)) +
+  geom_line(color = "grey", linewidth = 0.5) +
+  # make sec axis
+  scale_y_continuous(
+    # customize y axis
+    name = latex2exp::TeX("$\\delta^{18}O_{CaCO_3}$ vs. VPDB [\U2030]"), # rename carbonate d18O with permil symbol
+    #labels = function(x) paste0(x, "\U2030"),
+    breaks = seq(-20, -6, 2), # set range from -20 to -6 by steps of 2
+    sec.axis = sec_axis(
+      name = latex2exp::TeX(
+        "Contours: $\\delta^{18}O_{w}$ vs. VSMOW [\U2030]" # rename wataer d18O with permil symbol
+      ),
+      breaks = unique(model_df$d_H2O.permil),
+      #labels = function(x) paste0(x, "\U2030"),
+      transform = function(y) {
+        y |>
+          calculate_d_H2O_from_CaCO3(temp.C = max(model_df$temp.C)) |>
+          convert_vpdb_to_vsmow()
+      }
+    )
+  ) +
+  # limit plot to near y range of data that will be plotted over top
+  coord_cartesian(
+    ylim = c(-20, -8),
+    xlim = c(20, 120),
+    expand = FALSE # crop exactly to size
+  ) +
+  theme_bw() +
+  theme(panel.grid = element_blank()) # get rid of grid lines
+
+
+plot5
+
+# add arrow
+arrows <- tibble(
+  process = c("diagenesis1", "diagenesis2"), # naming the processes
+  temp_start = 29, # starting temp (x) for both arrows
+  delta_start = -13, # starting d18O (y) for both arrows
+  temp_end = c(51, 60), # ending temp for high and low w/r alteration trajectories, respectively
+  delta_end = c(-17, -13) # ending d18O for high and low w/r alteration trajectories, respectively
+)
+
+plot6 <- plot5 +
+  geom_segment(
+    data = arrows, # add the arrows
+    map = aes(
+      x = temp_start, # where the arrows start in x (temp) space
+      y = delta_start, # where the arrows start in y (d81Ocarb) space
+      xend = temp_end, # where the arrows end in x (temp) space
+      yend = delta_end, # where the arrows end in y (d81Ocarb) space
+      group = NULL, # get rid of grouping inherited from previous aesthetics in plot5
+      linetype = process # separate linetype by process (rather than color) so it is a separate legend
+    ),
+    arrow = arrow(length = unit(0.2, "cm")) # set arrow cap/head length
+  ) +
+  scale_linetype_manual(
+    # set the linetypes according to the diagenesis process
+    values = c("diagenesis1" = "solid", "diagenesis2" = "dashed"),
+    labels = list(
+      latex2exp::TeX(
+        # label arrow diagenesis1 with LaTex text with delta symbol, 18 superscript
+        "High W/R: toward $\\delta^{18}O_{water}$ (constant composition)"
+      ),
+      latex2exp::TeX(
+        # label arrow diagenesis2 with LaTex text with delta symbol, 18 superscript
+        "Low W/R: toward $\\delta^{18}O_{water}$ (evolving composition)"
+      )
+    )
+  )
+
+plot6
+```
+
+
+## Final Plot, Add Star and Isotope Data
+@fig-2 is modeled after @fetrow_how_2022 and shows clumped isotope temperatures (°C), $\delta^{18}O_{carbonate}$ (‰ vs. VPDB), and $\delta^{18}O_{w}$ (‰ vs. VSMOW) for four different types of carbonate at the Willow Creek Anticline: a carbonate-cemented coprolite (see Figure 3), limestone (see Figure 4), a rhizolith (see Figure 5), and vein calcite (see Figure 6). On one hand, the rhizolith and the limestones yield mineral formation temperatures that are reasonable Earth surface temperatures for the Late Cretaceous, thereby likely representing unaltered carbonate endmembers. On the other hand, the vein calcite yields a high temperature (~100°C) and therefore likely represents a purely diagenetic endmember. The coprolite shows a wide range in temperatures and $\delta^{18}O_{carbonate}$ values, likely because it is composed of multiple “coprofabrics” (@chin_paleobiological_2007, @plaza_torres_new_2023) that likely mineralized under different conditions and possibly at different times (e.g., @hollocher_early_2012). These coprofabrics are labeled in the plot and also shown in Figure 3. The tan and white micrite/sediment coprofabrics and the sparry coprofabric display a variety of temperatures and oxygen isotope values that appear to plot along a high W/R ratio ('fluid-buffered') diagenetic alteration trajectory, suggesting that individual fabrics were altered to different extents by a fluid with a constant $\delta^{18}O_{w}$ composition. Interestingly, the sparry coprofabric has a similar $\delta^{18}O_{carbonate}$ value to the vein calcite but a different temperature, which suggests that it could represent alteration along a low W/R ratio ('rock-buffered') diagenetic trajectory by fluid with an evolving $\delta^{18}O_{w}$ composition.
+
+```{r}
+#| label: fig-2
+#| fig-width: 10
+#| fig-height: 8
+#| fig-cap: Willow Creek Anticline carbonate clumped isotope $\Delta_{47}$-derived mineral formation temperature in degrees Celcius vs. $\delta^{18}O_{carbonate}$ (measured in ‰ vs. VPDB) with $\delta^{18}O_{w}$ (calculated from $\delta^{18}O_{carbonate}$ and $\Delta_{47}$ temperature, reported in ‰ vs. VSMOW) contour lines, calculated from the fractionation factor (alpha, $\alpha$). Different shapes indicate different types of carbonate, and different colors indicate different specimens of the same type.
+plot7 <- plot6 +
+  geom_star(
+    # add star
+    x = 29, # star temp (x)
+    y = -13, # star d18O (y)
+    size = 4, # size of star
+    fill = "yellow", # make it yellow
+    color = "black" # with a black outline
+  ) +
+  # add vertical error bars
+  geom_errorbar(
+    data = Clumped, # set df
+    inherit.aes = FALSE, # false inherit.aes so it doesn't inherit aesthetics from plot5
+    aes(
+      ymin = min_d18O, # lower extent of error bars
+      ymax = max_d18O, # upper extent of error bars
+      color = Specimen, # color by specimen
+      group = NULL, # get rid of grouping aesthetic just in case (inherited from plot5) bc otherwise it doesn't work
+      x = mean_ICDES # explicitly set x for error bars
+    )
+  ) +
+  # add horizontal error bars
+  geom_errorbar(
+    data = Clumped,
+    inherit.aes = FALSE, # false inherit.aes so it doesn't inherit aesthetics from plot5
+    aes(
+      xmin = min_ICDES, # lower extent of error bars
+      xmax = max_ICDES, # upper extent of error bars
+      color = Specimen, # color by specimen
+      group = NULL, # get rid of grouping aesthetic inherited from plot5 bc otherwise it doesn't work
+      y = mean_d18O # explicitly set y for error bars
+    )
+  ) +
+  geom_point(
+    # add clumped isotope data
+    data = Clumped, # df to use
+    inherit.aes = FALSE, # remove inherited aesthetics
+    aes(
+      x = mean_ICDES, # x value of point as temperature
+      y = mean_d18O, # y value of point from d18O carbonate
+      shape = Type, # shape by carbonate type
+      fill = Specimen, # fill by specimen (same as error bars)
+      group = NULL # ungroup so it doesn't inherit from plot5 and throw an error
+    ),
+    color = "black", # outline in black
+    size = 4, # make points a little bigger
+    stroke = 0.25 # smaller/thinner black outline
+  ) +
+  scale_color_brewer(palette = "Dark2") + # set color palette for error bars
+  scale_fill_brewer(palette = "Dark2") + # set color palette for points to be the same as error bars
+  scale_shape_manual(values = c(21, 22, 23, 24, 25)) + # set shapes to be hollow (with black as stroke/outline color and fill as point fill)
+  labs(
+    # add titles/labels for plot + legend
+    title = latex2exp::TeX(
+      "Clumped Isotope Temperature vs. $\\delta^{18}O_{carbonate}$ and $delta^{18}O_{water}$"
+    ),
+    subtitle = "Different Types of WCA Carbonates",
+    x = "Temperature (°Celcius)",
+    linetype = "Diagenetic Process/Fluid Composition",
+    shape = "Carbonate Type"
+  ) + # relabel x axis and arrow legend title
+  guides(
+    # get rid of fill and color legend since specimen is not as important as type
+    fill = "none",
+    color = "none",
+    shape = guide_legend(order = 1), # reorder the legend entries so shape comes first
+    linetype = guide_legend(order = 2) # and linetype comes second (below)
+  ) +
+  annotate(
+    # add labels to plot to label the different types of "coprofabrics" (circular coprolite points, see figure 3 (coprolite pictures with outlines/labels) for what they look like): sparry
+    "text", # set text annotation
+    x = 65, # set x position
+    y = -18, # set y position
+    color = "#1B9E77", # set color to be same as point color
+    size = 4, # set small size
+    label = "sparry" # set label text
+  ) +
+  annotate(
+    # add labels to plot to label the different types of "coprofabrics" (circular coprolite points, see figure 3 (coprolite pictures with outlines/labels) for what they look like): laminated
+    "text",
+    x = 60,
+    y = -8.6,
+    color = "#1B9E77",
+    size = 4,
+    label = "laminated"
+  ) +
+  annotate(
+    # add labels to plot to label the different types of "coprofabrics" (circular coprolite points, see figure 3 (coprolite pictures with outlines/labels) for what they look like): white micrite/sediment
+    "text",
+    x = 54,
+    y = -14.3,
+    color = "#1B9E77",
+    size = 4,
+    label = "white micrite/sediment"
+  ) +
+  annotate(
+    # add labels to plot to label the different types of "coprofabrics" (circular coprolite points, see figure 3 (coprolite pictures with outlines/labels) for what they look like): tan micrite/sediment
+    "text",
+    x = 56.5,
+    y = -13.4,
+    color = "#1B9E77",
+    size = 4,
+    label = "tan micrite/sediment"
+  ) +
+  # customize theme
+  scale_x_continuous(breaks = seq(20, 140, 20)) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14), # center, bold, size plot title
+    plot.subtitle = element_text(hjust = 0.5, size = 13), # center, size plot subtitle
+    axis.title = element_text(size = 12), # set axis title size
+    axis.text = element_text(size = 11), # set axis text size
+    axis.title.y.left = element_text(size = 12), # set left y axis text size
+    axis.title.y.right = element_text(size = 12), # set right y axis text size
+    legend.background = element_rect(
+      # give the plot a thin black border
+      color = "black",
+      fill = NULL,
+      linewidth = 0.25
+    ),
+    legend.title = element_text(hjust = 0.5, size = 12), # size legend title text
+    legend.text = element_text(size = 11), # size legend entry text
+    legend.position = "inside", # put the legend inside the plot
+    legend.justification = c("right", "top"), # right justify legend
+    legend.position.inside = c(.99, .99), # set position relative to top right
+    legend.box.just = "right", # right justify legend boxes
+    legend.spacing.y = unit(0.25, "cm") # set smaller margin between legends
+  )
+
+plot7
+```
+
+# Pictures
+
+```{r}
+# load magick for images
+library(magick)
+
+# read images in from images folder
+coprofabrics <- image_read("images/coprofabrics.png")
+
+coprofabrics
+
+limestones <- image_read("images/limestones.png")
+
+limestones
+
+rhizolith <- image_read("images/rhizolith.png")
+
+rhizolith
+
+vein_calcite <- image_read("images/vein_calcite.png")
+
+vein_calcite
+```
+
+# Discussion
+•Mineral formation temperatures of limestones and carbonate-infilled rhizolith represent reasonable Late Cretaceous Earth surface temperatures (~28-38°C), representing the unaltered endmembers. 
+
+•Vein calcite yields a mineral formation temperature consistent with high-temperature diagenetic fluid (~100°C), representing our diagenetic endmember. 
+
+•Coprolite carbonate mineral formation temperatures vary with the type of “coprofabric” analyzed (~44-66°C) and represent diagenetic alteration trajectories.
+
+•Overall, the stable isotope compositions of limestones and a rhizolith are consistent with Earth surface conditions; that of vein calcite is consistent with diagenetic fluid; and those of different coprolite "coprofabrics" consistent with different degrees of diagenetic recrystallization. 
+
+# References
+
+::: {#refs}
+:::

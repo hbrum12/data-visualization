@@ -1,0 +1,288 @@
+---
+title: "Plotting Assignment #5"
+subtitle: "Time Series"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 10
+fig-height: 6
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+
+# load packages, tidyverse includes lubridate
+library(tidyverse)
+
+# install arrow package
+#install.packages("arrow") # run this only if you don't have the arrow package installed
+library(arrow)
+
+# load script files
+source("scripts/plotting_functions.R")
+
+```
+
+# Data
+
+```{r}
+# load fire data, make sure it's a tibble, save to "fires" variable
+fires <- as_tibble(arrow::read_parquet("data/fires.parquet"))
+```
+
+# Plots
+
+## Plot 1 -- Total Fires Every Day
+@fig-1 displays how many fires occurred each day between 1992 and 2015. It appears that there were, relatively speaking, more days with 300 or fewer fires given how densely the lower/yellow bars are populated along the x-axis. However, there were definitely more days with 600+ fires than I was expecting. The days with the most fires had over 1000 fires, which feels like a lot considering this is data only from the United States. 
+```{r}
+#| label: fig-1
+#| fig-cap: Bar plot showing the number of fires per day every year from 1992 through 2015. X-axis ticks represent January 1st of each year; the legend and y-axis both represent numbers of fires, but do so differently from one another (y-axis is height, legend is color).
+
+# create new tibble with fires per day, every day of the dataset, and adding an n column to total up the # of fires
+fires_by_date <- fires |>
+  summarize(.by = discovery_date, n = n()) # making new fire dataset organized by date, adding an n column to keep track of how many entries there were on that date
+
+fires_by_date |>
+  ggplot() +
+  aes(x = discovery_date, y = n, fill = n) +
+  geom_col(width = 22) + # if the width is too small, bars won't show up because they are so skinny bc the x-axis is so many days; 22 seems to make sure they all appear and are readily visible
+  scale_fill_gradientn(
+    colors = c("#ffe600ff", "red", "darkred"), # gradient from orangey yellow -> red -> dark red to look cool/like fire
+    name = "Number of Fires"
+  ) +
+  scale_x_date(
+    breaks = seq(ymd("1992-01-01"), ymd("2015-12-31"), "3 years"), # setting the date bounds for the x axis and the major breaks at 3 yrs
+    date_labels = "%Y", # showing year in the x axis text
+    date_minor_breaks = "1 year", # breaking every 1 year
+    expand = expansion(add = c(20, 20)) # setting the x axis bounds expand 20 days so the first and last bars are basically flush with the plot extent, but not squished
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 1215, 150),
+    expand = expansion(add = c(0, 10)) # setting the vertical bars to start flush against the x-axis, but leave some space at the top
+  ) +
+  theme_bw() +
+  labs(
+    x = "Years by Day\n(Starting in January of Each Year)",
+    y = "Number of Fires",
+    title = "Fires in the US per Day (1992-2015)"
+  ) +
+  theme(
+    # pretty-ifying the plot
+    panel.grid.major.x = element_line(color = "black", linewidth = 0.05),
+    panel.grid.minor.x = element_line(color = "black", linewidth = 0.025),
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.05),
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.025),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 9)
+  )
+
+```
+
+## Plot 2 -- Total Fires by Year
+@fig-2 has three panels: the top one is the number of fires per year (in numbers that are divided by 1000); the middle one is average fire size in acres, and the bottom one is average fire duration in hours. The data spans from 1992 through 2015. The highest number of fires in a year was ~114,000, compared to the lowest at ~61,000--almost 1/2 the amount. Interestingly, all three datasets show positively correlated data via lines of best fit, where as year increased overall, so too did the parameter being represented. However, the data fluctuates significantly in all three plots. One outlier in the average duration plot sits around 120 hours, which is 2-5x longer than any of the other years. Though the average fire size for that year (2014) was actually on the lower end, when looking at the data table itself, it becomes apparent that there were more small but long fires in 2014 (longer on average than any of the other years). 
+```{r}
+#| label: fig-2
+#| fig-cap: Scatterplot showing the number of fires per year (numbers are divided by 1000 for ease of axis reading) stacked on top of the average fire size (in acres) and average duration (in hours). Lines of best fit show positive/increasing trends in the three datasets.
+
+fires_by_year <- fires |> # creating a new tibble with fires grouped by year and new columns of: fires/year divided by 1000 for a more manageable number, fire_size, and days_til_contained
+  mutate(
+    year = discovery_date |> year() |> make_date(),
+    contained_after = contained_after / dhours(1)
+  ) |>
+  summarize(
+    .by = "year",
+    n = (n() / 1000),
+    fire_size = mean(fire_size),
+    contained_after = mean(contained_after, na.rm = TRUE)
+  )
+# pivoting fires_by_year longer to make it easier to facet the plots
+fires_by_year_long <- fires_by_year |>
+  pivot_longer(
+    cols = c("n", "fire_size", "contained_after"),
+    names_to = "metrics",
+    values_to = "values"
+  )
+
+# recoding the factors to be more intuitive and pretty
+fires_by_year_long_fct <- fires_by_year_long |>
+  mutate(
+    metrics = metrics |>
+      as_factor() |>
+      fct_recode(
+        "Number of Fires\n(n \U00F7 1000)" = "n", # adding "divided by 1000" using the Unicode for the division symbol to the factor for n since I divided the number of fires by 1000 when making the dataset
+        "Average Fire Size\n(Acres)" = "fire_size",
+        "Average Duration\n(Hours)" = "contained_after"
+      )
+  )
+
+# plotting
+fires_by_year_long_fct |>
+  ggplot() +
+  aes(x = year, y = values, color = metrics) +
+  geom_point(size = 2) +
+  facet_wrap(~metrics, ncol = 1, scales = "free_y", strip.position = "left") + # making the y scales independent and putting the strip titles on the left / y axis so that units are clear
+  scale_x_date(
+    breaks = seq(ymd("1992-01-01"), ymd("2016-01-01"), "3 years"),
+    date_labels = "%Y",
+    date_minor_breaks = "1 year",
+    expand = expansion(add = c(75, 75)) # adding space to either side of the x axis so points don't get cut off
+  ) +
+  scale_y_continuous(expand = expansion(add = c(10, 10))) + # making the y axis a little bigger to show some space above/below the lowest/highest points +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE, linewidth = 0.5) + # adding lines of best fit
+  theme_bw() +
+  scale_color_brewer(palette = "Dark2") + # color blind friendly palette
+  labs(
+    title = "How Many? How Big? How Long?\nFires in the U.S. From 1992-2015",
+    x = "Year",
+  ) +
+  theme(
+    # pretty-ifying the plot
+    panel.grid.major.x = element_line(color = "black", linewidth = 0.05),
+    panel.grid.minor.x = element_line(color = "black", linewidth = 0.025),
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.05),
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.025),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    axis.title.x = element_text(size = 11),
+    axis.title.y = element_blank(), # taking away the y axis label since each one is different
+    axis.text = element_text(size = 9),
+    legend.position = "None",
+    strip.placement = "outside", # putting the titles outside of the axis text
+    strip.background = element_blank() # getting rid of the grey strip title background so they blend more
+  )
+
+```
+
+## Plot 3: Fires by Cause and Month
+@fig-3 shows the number of fires (divided by 1000) for each month across 12 different causes of fires; the "Other" category includes "Miscellaneous" and "Missing/Undefined" causes of fires. As expected, "Fireworks" caused the most fires in the month of July; this makes sense because of Independence Day on July 4th, which is usually celebrated with--you guessed it--fireworks. It is interesting that "Children" cause the most amount of fires in April, but I do not have a good guess as to why that is. Looking at the x-axis scales, "Debris Burning" causes the most amount of fires overall, with lightning coming in second and arson(!) coming in third. "Debris Burning" fires peak in the spring, which makes sense given that after the winter, there is lots of litter that gets exposed from the snow melting. The "Lightning" fires peak in the summertime, which makes sense due to both high heat and low water availability. It appears that "Structure" fires are the least common overall. 
+```{r}
+#| label: fig-3
+#| fig-height: 10
+#| fig-cap: Horizontal bar plot showing how many fires occurred each month from 1992-2015, separated by the cause of the fires. Number of fires (x-axis) is again divided by 1000 to make the axes easier to read. Facet strip titles coded using fun LaTex symbols.
+
+# loading the fire causes parquet so it can be joined
+fire_causes <- as_tibble(arrow::read_parquet("data/causes.parquet"))
+
+# making a new dataset by using a left_join to join fires and fire causes by the cause_code column
+fires_and_causes <- fires |> left_join(fire_causes, by = "cause_code")
+
+
+fires_by_month <- fires_and_causes |> # creating a new tibble with fires grouped by month and cause and then the number of fires/month/cause
+  mutate(
+    month = discovery_date |> month(label = TRUE, abbr = FALSE),
+    ordered = TRUE,
+    month = fct_rev(month) # reverse the order so the months plot from top to bottom (Jan -> Dec) in the plots
+  ) |>
+  summarize(
+    .by = c("cause_description", "month"),
+    n = n() / 100,
+  )
+
+fires_by_month <- fires_by_month |>
+  mutate(
+    cause_description = as_factor(cause_description) |>
+      # collapse Miscellaneous and Missing/Undefined into one "Other" category since they're all vague and this will make the facet_wrap more evenly distributed
+      fct_collapse(
+        "Other" = c("Miscellaneous", "Missing/Undefined"),
+      ),
+    # make "Other" column show up last
+    cause_description = fct_relevel(cause_description, "Other", after = Inf)
+  )
+
+
+fires_by_month |>
+  mutate(
+    cause_description = fct_recode(
+      cause_description, # fun LaTex recoding for facet strip titles
+      "$\\lfloor{i}gh\\dagger\\pi{i}\\pi{g}$" = "Lightning",
+      "$\\delta\\epsilon\\beta\\Re{i}{s} \\ \\beta{u}\\Re\\pi{i}\\pi{g}$" = "Debris Burning",
+      "$\\subset\\alpha{m}\\rho{f}{i}\\Re\\epsilon$" = "Campfire",
+      "\\Sigma{q}\\mu{i}\\rho{m}\\epsilon\\pi\\dagger \\ \\mu{s}\\epsilon" = "Equipment Use",
+      "$\\alpha\\Re{s}\\heartsuit\\pi" = "Arson",
+      "${C}{h}{i}\\lfloor\\partial\\Re\\epsilon\\pi$" = "Children",
+      "$\\Re\\alpha{i}\\lfloor\\Re\\sigma\\alpha\\delta$" = "Railroad",
+      "${S}{m}\\sigma{k}{i}\\pi{g}$" = "Smoking",
+      "$\\rho\\sigma\\omega\\epsilon\\Re\\lfloor{i}\\pi\\epsilon" = "Powerline",
+      "${S}\\dagger\\Re\\mu{c}\\dagger\\mu\\Re\\epsilon$" = "Structure",
+      "${F}{i}\\Re\\epsilon\\omega\\sigma\\Re{k}{s}" = "Fireworks",
+      "$\\theta\\dagger{h}\\epsilon\\Re$" = "Other"
+    )
+  ) |>
+  ggplot() +
+  aes(x = n, y = month, fill = cause_description) + # leave fill as default colors bc it's just for visual purposes
+  geom_col() +
+  facet_wrap(
+    ~cause_description,
+    scales = "free_x",
+    ncol = 3, # setting 3 columns so that there are 4 rows; I set the figure height to be 10 inches so that the y axes aren't super compressed
+    labeller = label_latex()
+  ) +
+  theme_bw() +
+  labs(
+    y = NULL,
+    x = "Number of Fires\n(n \U00F7 1000)",
+    title = "Fires per Month by Cause",
+    fill = NULL
+  ) +
+  scale_x_continuous(expand = expansion(mult = c(0.0, 0.01))) + # making the horizontal bars start flush against the y-axis at 0, but leaving some space on the right
+  theme(
+    # pretty-ifying the plot
+    panel.grid.major.x = element_line(color = "black", linewidth = 0.05),
+    panel.grid.minor.x = element_line(color = "black", linewidth = 0.025),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    axis.title.x = element_text(size = 10),
+    axis.text = element_text(size = 8),
+    legend.position = "none",
+    strip.text = element_text(size = 11)
+  )
+```
+
+
+
+# References
+
+::: {#refs}
+:::

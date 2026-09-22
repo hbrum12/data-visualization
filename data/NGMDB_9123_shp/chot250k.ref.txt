@@ -1,2 +1,0 @@
-Rowid_,SOURCE,SCALE,AUTHORS,YEAR,REFERENCE
-,86,250000,"Mudge, M.R., Earhart, R.L., Whipple, J.W., and Harrison, J.E.",1982,"Geologic and structure map of the Choteau 1- by 2-degree quadrangle, western Montana: U.S. Geological Survey, Miscellaneous Investigations Series Map I-1300, 2 sheets (scale 1:250,000)."
