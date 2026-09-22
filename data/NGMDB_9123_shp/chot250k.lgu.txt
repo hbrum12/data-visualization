@@ -1,0 +1,6 @@
+Rowid_,LINECODE,LABEL,SYMBOL,TYPE,ACCURACY,CERTAINTY,DESC_
+,801,Tm,158,dikes and sills, , ,hornblende monzonite
+,802,Ydi,222,sills, , ,"andesite, basaltic andesite, and dacite"
+,803,Tmp,156,dikes and sills, , ,monzonite porphyry
+,804,Ks,157,sills, , ,diorite sills
+,805,Ydi,224,sills,concealed, ,"andesite, basaltic andesite, and dacite"

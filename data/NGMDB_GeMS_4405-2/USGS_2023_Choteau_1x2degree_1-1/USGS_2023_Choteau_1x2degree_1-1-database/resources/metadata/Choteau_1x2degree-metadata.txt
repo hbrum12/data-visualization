@@ -1,0 +1,1166 @@
+Metadata:
+  Identification_Information:
+    Citation:
+      Citation_Information:
+        Originator: Micah A. Hernandez
+        Originator: Logan A. Owen
+        Publication_Date: 20231018
+        Title: GIS Data for Geologic and Structure Map of the Choteau 1 x 2 Degree Quadrangle, Western Montana
+        Geospatial_Data_Presentation_Form: vector digital data
+        Publication_Information:
+          Publication_Place: Denver, Colorado
+          Publisher: U.S. Geological Survey
+        Other_Citation_Details:
+          Additional information about Originators: Hernandez, M.A., https://orcid.org/0000-0002-9656-0832; Owen, L.A., https://orcid.org/0000-0001-9806-0316
+
+          Suggested citation: Hernandez, M.A., and Owen, L.A., 2023, GIS data for geologic and structure map of the Choteau 1 x 2 degree quadrangle, western Montana: U.S. Geological Survey data release, https://doi.org/10.5066/P93PTFDV.
+        Online_Linkage: https://doi.org/10.5066/P93PTFDV
+        Larger_Work_Citation:
+          Citation_Information:
+            Originator: Melville R. Mudge
+            Originator: Robert L. Earhart
+            Originator: James W. Whipple
+            Originator: Jack E. Harrison
+            Publication_Date: 1982
+            Title: Geologic and structure map of the Choteau 1 x 2 degrees quadrangle, western Montana
+            Edition: 1.0
+            Geospatial_Data_Presentation_Form: publication
+            Series_Information:
+              Series_Name: U.S. Geological Survey Miscellaneous Investigations Series
+              Issue_Identification: Map I-1300
+            Publication_Information:
+              Publication_Place: Denver, Colorado
+              Publisher: U.S. Geological Survey
+            Other_Citation_Details: Suggested citation: Mudge, M.R, Earhart, R.L., Whipple, J.W., and Harrison, J.E., 1982, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle: U.S. Geological Survey Miscellaneous Investigations Series Map I-1300, scale 1:250,000, https://doi.org/10.3133/i1300.
+            Online_Linkage: https://doi.org/10.3133/i1300
+    Description:
+      Abstract:
+        This U.S. Geological Survey (USGS) data release provides an updated digital geospatial database for the geologic map of the Choteau 1 x 2 degrees quadrangle, western Montana (Mudge and others, 2001). Attribute tables and geospatial features (lines and polygons) conform to the Geologic Map Schema (USGS NCGMP, 2020) and represent the geologic map as published in USGS Miscellaneous Investigations Series Map I-1300 (Mudge and others, 1982). Minor errors, such as mistakes in line decoration or differences between the digital data and the map image, are corrected in this version.
+
+        The database represents the geology for the 4.2 million acre, geologically complex Choteau 1 x 2 degrees quadrangle, at a publication scale of 1:250,000. The map covers primarily Lewis and Clark, Teton, Powell, Missoula, Lake, and Flathead Counties, but also includes minor parts of Cascade County. These GIS data supersede those in the report (Mudge and others, 2001).
+
+        References: Mudge, M.R, Earhart, R.L., Whipple, J.W., Harrison, J.E., Munts, S.R., and Silkwood, J.T., 2001, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle: a digital database: U.S. Geological Survey Miscellaneous Investigations Series Map I-1300, scale 1:250,000, https://pubs.usgs.gov/imap/i1300/.
+
+        Mudge, M.R, Earhart, R.L., Whipple, J.W., and Harrison, 1982, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle: U.S. Geological Survey Miscellaneous Investigations Series Map I-1300, scale 1:250,000, https://doi.org/10.3133/i1300.
+
+        U.S. Geological Survey National Cooperative Geologic Mapping Program, 2020, GeMS (Geologic Map Schema) - A standard format for the digital publication of geologic maps: U.S. Geological Survey Techniques and Methods, book 11, chap. B10, 74 p., https://doi.org/10.3133/tm11B10.
+      Purpose: The purpose of the data release is to produce a Geologic Map Schema (GeMS)-compliant version for the geologic map of the Choteau 1 x 2 degrees quadrangle, western Montana, that updates the geospatial data published as part of U.S. Geological Survey Miscellaneous Investigations Series Map I-1300 (Mudge and others, 2001). Conversion and publication of modern GIS data for geologic maps is foundational and high priority to the USGS Mineral Resources Program (MRP) to facilitate on-going research and other activities pertaining to critical mineral deposits as well as to other geologic and geophysical mapping efforts, petrologic studies, and mineral resource assessments. The data reside in the National Geologic Map Database (NGMDB) distributed archive of standardized geoscience information for the nation.
+      Supplemental_Information:
+        Choteau_1x2degree.gdb is a composite geodataset that conforms to "GeMS (Geologic Map Schema) - A standard format for the digital publication of geologic maps," available at http://ngmdb.usgs.gov/Info/standards/GeMS/. A shapefile version of the dataset is also available. It consists of shapefiles, DBF files, and delimited text files and retains all information in the native geodatabase, but some programming will likely be necessary to assemble these components into usable formats.
+
+        The Esri file geodatabase (Choteau_1x2degree.gdb) contains the following elements:
+
+        --GeologicMap: feature dataset (subdirectory) containing the following feature classes (GIS layers):
+
+        ----ContactsAndFaults: line layer representing locations of contacts and faults.
+
+        ----DataSourcePolys: polygon layer representing the spatial extent of data sources and (or) references used within the map boundary.
+
+        ----GeologicLines: line layer representing the locations of dikes, fold axes, and other linear features.
+
+        ----MapUnitPolys: polygon layer representing the distribution of geologic map units.
+
+        --DataSources: table that lists sources and (or) references used to derive spatial features (lines polygons) and attribute information.
+
+        --DescriptionOfMapUnits: table of map unit descriptions derived from the collar of the geologic map or geologic map pamphlet. The hierarchical order of map units is coded in the HierarchyKey field.
+
+        --GeoMaterialDict: table that defines and lists lithology terms in hierarchical order used in the GeoMaterial field of the DescriptionOfMapUnits table. The standardized vocabulary is available in Appendix 1 of the GeMS documentation.
+
+        --Glossary: table that defines and lists sources of terms used in the database.
+
+        Reference: U.S. Geological Survey National Cooperative Geologic Mapping Program, 2020, GeMS (Geologic Map Schema)- A standard format for the digital publication of geologic maps: U.S. Geological Survey Techniques and Methods, book 11, chap. B10, 74 p., https://doi.org//10.3133/tm11B10.
+    Time_Period_of_Content:
+      Time_Period_Information:
+        Single_Date/Time:
+          Calendar_Date: 20231018
+      Currentness_Reference: publication date
+    Status:
+      Progress: Complete
+      Maintenance_and_Update_Frequency: None planned
+    Spatial_Domain:
+      Bounding_Coordinates:
+        West_Bounding_Coordinate: -114.2713
+        East_Bounding_Coordinate: -111.7611
+        North_Bounding_Coordinate: 48.2395
+        South_Bounding_Coordinate: 46.7588
+    Keywords:
+      Theme:
+        Theme_Keyword_Thesaurus: ISO 19115 Topic Category
+        Theme_Keyword: geoscientificInformation
+      Theme:
+        Theme_Keyword_Thesaurus: USGS Thesaurus
+        Theme_Keyword: data services
+        Theme_Keyword: geospatial datasets
+        Theme_Keyword: geographic information systems
+        Theme_Keyword: geology
+        Theme_Keyword: geologic maps
+        Theme_Keyword: bedrock geologic units
+        Theme_Keyword: structural geology
+      Theme:
+        Theme_Keyword_Thesaurus: None
+        Theme_Keyword: U.S. Geological Survey
+        Theme_Keyword: USGS
+        Theme_Keyword: Mineral Resources Program
+        Theme_Keyword: MRP
+        Theme_Keyword: Geology, Geophysics and Geochemistry Science Center
+        Theme_Keyword: GGGSC
+        Theme_Keyword: National Cooperative Geologic Mapping Program
+        Theme_Keyword: NCGMP
+        Theme_Keyword: National Geologic Map Database
+        Theme_Keyword: NGMDB
+        Theme_Keyword: Geologic Map Schema
+        Theme_Keyword: GeMS
+      Theme:
+        Theme_Keyword_Thesaurus: USGS Metadata Identifier
+        Theme_Keyword: USGS:6298d3d6d34ec53d276c841d
+      Place:
+        Place_Keyword_Thesaurus: Geographic Names Information System (GNIS)
+        Place_Keyword: Lewis and Clark County
+        Place_Keyword: Powell County
+        Place_Keyword: Missoula County
+        Place_Keyword: Lake County
+        Place_Keyword: Flathead County
+        Place_Keyword: Choteau
+        Place_Keyword: Cascade County
+      Place:
+        Place_Keyword_Thesaurus: Common geographic areas
+        Place_Keyword: Montana
+        Place_Keyword: MT
+    Access_Constraints: None. Please see 'Distribution Info' for details.
+    Use_Constraints: These data are intended for use at approximately 1:250,000-scale or smaller. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.  Although these data have been processed successfully on a computer system at the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty. The USGS or the U.S. Government shall not be held liable for improper or incorrect use of the data described and/or contained herein.
+    Point_of_Contact:
+      Contact_Information:
+        Contact_Person_Primary:
+          Contact_Person: Karen Lund
+          Contact_Organization: U.S. Geological Survey, ROCKY MOUNTAIN REGION
+        Contact_Position: Research Geologist
+        Contact_Address:
+          Address_Type: mailing address
+          Address: Mail Stop 973, W 6th Ave Kipling St
+          City: Lakewood
+          State_or_Province: CO
+          Postal_Code: 80225
+          Country: US
+        Contact_Voice_Telephone: 303-236-5600
+        Contact_Facsimile_Telephone: 303-236-3200
+        Contact_Electronic_Mail_Address: klund@usgs.gov
+    Data_Set_Credit: Work was accomplished by the U.S. Geological Survey Geology, Geophysics, and Geochemistry Science Center (GGGSC) with support from the Mineral Resources Program (MRP) and the FEDMAP component of the National Cooperative Geologic Mapping Program.
+    Native_Data_Set_Environment: Microsoft Windows 10 Enterprise, Version 10 (Build 18363); Esri ArcGIS Pro 3.4.3
+  Data_Quality_Information:
+    Attribute_Accuracy:
+      Attribute_Accuracy_Report: Unique values in attribute fields were checked through frequency analyses. The unique values in each attribute field were reviewed and checked for spelling, consistency of terms, accuracy, adherence to established vocabularies, and completeness. Text terms and values entered by USGS authors were reviewed and verified.
+    Logical_Consistency_Report: GIS layer and attribute information were cross walked into the GeMS database structure. Attribute values were modified for consistency with GeMS terminology. Topology tests were conducted on polygon and line feature classes to ensure spatial integrity of the data.
+    Completeness_Report: The original GIS database (Mudge and others, 2001) was converted from ArcInfo interchange files (E00) to an Esri file geodatabase. Minor errors, such as mistakes in line decoration or differences between the digital data and the map image, are corrected in this version. The data set is considered complete for the information presented and as described in the abstract.
+    Positional_Accuracy:
+      Horizontal_Positional_Accuracy:
+        Horizontal_Positional_Accuracy_Report: Horizontal accuracy of line and polygon features is dependent on the source data. Computing technologies used for original data capture resulted in variable line quality and accuracy. Estimated accuracy of horizontal location, provided on a per-feature basis in the attribute field LocationConfidenceMeters in GeMS, was assigned a value of -9 indicating unknown. Base maps and (or) materials used for original data capture (ArcInfo coverages) are no longer available. Registration discrepancies between the printed map and the digital data are not addressed in this version.
+      Vertical_Positional_Accuracy:
+        Vertical_Positional_Accuracy_Report: Vertical accuracy testing does not apply to this dataset.
+    Lineage:
+      Source_Information:
+        Source_Citation:
+          Citation_Information:
+            Originator: Melville R. Mudge
+            Originator: Robert L. Earhart
+            Originator: James W. Whipple
+            Originator: Jack E. Harrison
+            Originator: Steven R. Munts
+            Originator: Jeffrey T. Silkwood
+            Publication_Date: 2001
+            Title: Geologic and Structure Map of the Choteau 1 x 2 degrees Quadrangle, Western Montana: A Digital Database
+            Edition: 1.0
+            Geospatial_Data_Presentation_Form: publication
+            Series_Information:
+              Series_Name: U.S. Geological Survey Miscellaneous Investigations Series
+              Issue_Identification: Map I-1300
+            Publication_Information:
+              Publication_Place: Menlo Park, CA
+              Publisher: U.S. Geological Survey
+            Other_Citation_Details: Suggested citation: Mudge, M.R, Earhart, R.L., Whipple, J.W., Harrison, J.E., Munts, S.R., and Silkwood, J.T., 2001, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle: a digital database: U.S. Geological Survey Miscellaneous Investigations Series Map I-1300, scale 1:250,000, https://pubs.usgs.gov/imap/i1300/.
+            Online_Linkage: https://pubs.usgs.gov/imap/i1300/
+        Source_Scale_Denominator: 250000
+        Type_of_Source_Media: Digital and/or Hardcopy
+        Source_Time_Period_of_Content:
+          Time_Period_Information:
+            Single_Date/Time:
+              Calendar_Date: 2001
+          Source_Currentness_Reference: publication date
+        Source_Citation_Abbreviation: Mudge and others (2001)
+        Source_Contribution: GIS data digitized from the original map publication. Those data are the basis for this data release.
+      Source_Information:
+        Source_Citation:
+          Citation_Information:
+            Originator: Melville R. Mudge
+            Originator: Robert L. Earhart
+            Originator: James W. Whipple
+            Originator: Jack E. Harrison
+            Publication_Date: 2001
+            Title: Geologic and Structure Map of the Choteau 1 x 2 degrees Quadrangle, Western Montana
+            Edition: 1.0
+            Geospatial_Data_Presentation_Form: publication
+            Series_Information:
+              Series_Name: U.S. Geological Survey Miscellaneous Investigations Series
+              Issue_Identification: Map I-1300
+            Publication_Information:
+              Publication_Place: Denver, Colorado
+              Publisher: U.S. Geological Survey
+            Other_Citation_Details: Suggested citation: Mudge, M.R, Earhart, R.L., Whipple, J.W., and Harrison, 1982, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle: U.S. Geological Survey Miscellaneous Investigations Series Map I-1300, scale 1:250,000, https://doi.org/10.3133/i1300.
+            Online_Linkage: https://doi.org/10.3133/i1300
+        Source_Scale_Denominator: 250000
+        Type_of_Source_Media: Digital and/or Hardcopy
+        Source_Time_Period_of_Content:
+          Time_Period_Information:
+            Single_Date/Time:
+              Calendar_Date: 1982
+          Source_Currentness_Reference: publication date
+        Source_Citation_Abbreviation: Mudge and others (1982)
+        Source_Contribution: Original published geologic map.
+      Source_Information:
+        Source_Citation:
+          Citation_Information:
+            Originator: U.S. Geological Survey National Cooperative Geologic Mapping Program
+            Publication_Date: 2020
+            Title: GeMS (Geologic Map Schema) - A standard format for the digital publication of geologic maps
+            Geospatial_Data_Presentation_Form: publication
+            Series_Information:
+              Series_Name: U.S. Geological Survey Techniques and Methods
+              Issue_Identification: book 11, chapter B10
+            Publication_Information:
+              Publication_Place: Reston, Virginia
+              Publisher: U.S. Geological Survey
+            Other_Citation_Details: Suggested citation: U.S. Geological Survey National Cooperative Geologic Mapping Program, 2020, GeMS (Geologic Map Schema) - A standard format for the digital publication of geologic maps: U.S. Geological Survey Techniques and Methods, book 11, chap. B10, 74 p., https://doi.org/10.3133/tm11B10
+            Online_Linkage: https://doi.org/10.3133/tm11B10
+        Type_of_Source_Media: Digital and/or Hardcopy
+        Source_Time_Period_of_Content:
+          Time_Period_Information:
+            Single_Date/Time:
+              Calendar_Date: 2020
+          Source_Currentness_Reference: publication date
+        Source_Citation_Abbreviation: USGS NCGMP (2020)
+        Source_Contribution: Database schema and some attribute definitions.
+      Source_Information:
+        Source_Citation:
+          Citation_Information:
+            Originator: Klaus K.E. Neuendorf
+            Originator: James P. Mehl, Jr.
+            Originator: Julia A. Jackson
+            Publication_Date: 2011
+            Title: Glossary of Geology
+            Edition: fifth
+            Geospatial_Data_Presentation_Form: publication
+            Publication_Information:
+              Publication_Place: Alexandria, Virginia
+              Publisher: American Geological Institute
+            Other_Citation_Details: Suggested citation: Neuendorf, K.K.E., Mehl, J.P., Jr., and Jackson, J.A., 2011, Glossary of Geology (5th ed.): Alexandria, Va., American Geological Institute, 779 p.
+        Type_of_Source_Media: Digital and/or Hardcopy
+        Source_Time_Period_of_Content:
+          Time_Period_Information:
+            Single_Date/Time:
+              Calendar_Date: 2011
+          Source_Currentness_Reference: publication date
+        Source_Citation_Abbreviation: Neuendorf and others (2011)
+        Source_Contribution: Definitions of some attributes.
+      Source_Information:
+        Source_Citation:
+          Citation_Information:
+            Originator: Federal Geographic Data Committee
+            Publication_Date: 2006
+            Title: FGDC Digital Cartographic Standard for Geologic Map Symbolization
+            Geospatial_Data_Presentation_Form: publication
+            Publication_Information:
+              Publication_Place: Reston, Virginia
+              Publisher: Federal Geographic Data Committee
+            Other_Citation_Details: Suggested citation: Federal Geographic Data Committee [prepared for the Federal Geographic Data Committee by the U.S. Geological Survey], 2006, FGDC Digital Cartographic Standard for Geologic Map Symbolization: Reston, Va., Federal Geographic Data Committee Document Number FGDC-STD-013-2006, 290 p., 2 plates, https://ngmdb.usgs.gov/fgdc_gds/geolsymstd.php
+            Online_Linkage: https://ngmdb.usgs.gov/fgdc_gds/geolsymstd.php
+        Type_of_Source_Media: Digital and/or Hardcopy
+        Source_Time_Period_of_Content:
+          Time_Period_Information:
+            Single_Date/Time:
+              Calendar_Date: 2006
+          Source_Currentness_Reference: publication date
+        Source_Citation_Abbreviation: FGDC (2006)
+        Source_Contribution: Standardized geologic map symbolization used for symbolizing the map.
+      Process_Step:
+        Process_Description: Mudge and others (1982) compiled the geology and published the original paper geologic map at 1:250,000 scale. The map was originally converted to a digital format by Jeffery T. Silkwood (U.S. Forest Service) and completed by U.S. Geological Survey and contractors at the Spokane Field Office (WA) in 2001 for input into a geographic information system (GIS).
+        Source_Used_Citation_Abbreviation: Mudge and others (1982)
+        Process_Date: 2001
+      Process_Step:
+        Process_Description:
+          The original data (Mudge and others, 2001) were converted from ArcInfo interchange files (E00) format to feature classes within an Esri file geodatabase. Attributes were standardized to conform to the Geologic Map Schema (GeMS) standard for geologic map publications (NCGMP, 2020). Definitions of these values are derived from the source publication (Mudge and others, 1982), GeMS (USGS NCGMP, 2020), and from the Glossary of Geology (Neuendorf and others, 2011). GeMS geodatabase feature classes and tables were populated with additional information as required. Data layers were re-projected to Albers Equal Area, North American Datum 1983, in units of meters.
+
+          Base maps and (or) materials used for original data capture are no longer available, therefore a georeferenced version of the original map publication (https://ngmdb.usgs.gov/Prodesc/proddesc_9123.htm) from the National Geologic Map Database was used to compare attribute information and to correct minor discrepancies between the GIS data and the printed map. Minor errors, such as differences in line decoration, line type, or map units were corrected and documented in the Notes attribute field. Registration discrepancies between the printed map and the digital data are not addressed in this version.
+
+          Map unit colors were matched to the original publication as best possible and are provided as RGB values in the AreaFillRGB field of the DescriptionOfMapUnits table. Map unit colors are also provided in the custom Esri Style file.
+
+          Geologic map symbolization was also matched to the original publication as best possible using the FGDC Digital Cartographic Standard for Geologic Map Symbolization (FGDC, 2006). These values are provided in the Symbol attribute fields and the included Esri Style file.
+
+          Topology tests were conducted on polygon and line feature classes to ensure spatial integrity of the data.
+        Source_Used_Citation_Abbreviation: USGS NCGMP (2020)
+        Source_Used_Citation_Abbreviation: Mudge and others (2001)
+        Source_Used_Citation_Abbreviation: Mudge and others (1982)
+        Source_Used_Citation_Abbreviation: Neuendorf and others (2011)
+        Source_Used_Citation_Abbreviation: FGDC (2006)
+        Process_Date: 20211201
+  Spatial_Data_Organization_Information:
+    Direct_Spatial_Reference_Method: Vector
+    Point_and_Vector_Object_Information:
+      SDTS_Terms_Description:
+        SDTS_Point_and_Vector_Object_Type: G-polygon
+        Point_and_Vector_Object_Count: 1815
+      SDTS_Terms_Description:
+        SDTS_Point_and_Vector_Object_Type: String
+        Point_and_Vector_Object_Count: 6946
+  Spatial_Reference_Information:
+    Horizontal_Coordinate_System_Definition:
+      Planar:
+        Map_Projection:
+          Map_Projection_Name: Albers Conical Equal Area
+          Albers_Conical_Equal_Area:
+            Standard_Parallel: 29.5
+            Standard_Parallel: 45.5
+            Longitude_of_Central_Meridian: -96.0
+            Latitude_of_Projection_Origin: 23.0
+            False_Easting: 0.0
+            False_Northing: 0.0
+        Planar_Coordinate_Information:
+          Planar_Coordinate_Encoding_Method: coordinate pair
+          Coordinate_Representation:
+            Abscissa_Resolution: 0.6096
+            Ordinate_Resolution: 0.6096
+          Planar_Distance_Units: meters
+      Geodetic_Model:
+        Horizontal_Datum_Name: North_American_Datum_1983
+        Ellipsoid_Name: GRS_1980
+        Semi-major_Axis: 6378137.0
+        Denominator_of_Flattening_Ratio: 298.257222101
+  Entity_and_Attribute_Information:
+    Detailed_Description:
+      Entity_Type:
+        Entity_Type_Label: Attribute Fields
+        Entity_Type_Definition: The attribute fields contain attribute information associated with features or records in the data set. The translated shapefile field name that is limited to 10 characters is provided in square brackets as needed. Attribute fields occur in data layer(s) and/or tables noted in parentheses.
+        Entity_Type_Definition_Source: USGS Authors
+      Attribute:
+        Attribute_Label: Age (DescriptionOfMapUnits)
+        Attribute_Definition: Age of map unit as shown in Description of Map Units.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Examples of values: "Pleistocene" or "Middle Jurassic"
+      Attribute:
+        Attribute_Label: AreaFillPatternDescription [PatDes] (DescriptionOfMapUnits)
+        Attribute_Definition: Text description (for example, "random small red dashes") provided as a convenience for users who must recreate symbolization.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Examples of values: "red circles" or "red triangles"
+      Attribute:
+        Attribute_Label: AreaFillRGB [RGB] (DescriptionOfMapUnits)
+        Attribute_Definition: {Red, Green, Blue} tuples that specify the suggested color (for example, "255,255,255", "124,005,255") of area fill for symbolizing MapUnit. Each color value is an integer between 0 and 255, values are zero-padded to a length of 3 digits, and values are separated by commas with no space: NNN,NNN,NNN.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Example of values: "255,255,204"
+      Attribute:
+        Attribute_Label: ContactsAndFaults_ID [CAFs_ID] (ContactsAndFaults)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Example of values: "CAF0001"
+      Attribute:
+        Attribute_Label: DataSources_ID [DatSrc_ID] (DataSources)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS01
+            Enumerated_Domain_Value_Definition: Mudge and others, 2001
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., Earhart, R.L., Whipple, J.W., Harrison, J.E., Munts, S.R., and Silkwood, J.T., 1982, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle, western Montana: a digital database: U.S. Geological Survey, Miscellaneous Investigations Series Map I-1300, version 1.0, 38 p., scale 1:250,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS02
+            Enumerated_Domain_Value_Definition: Mudge and others, 1982
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., Earhart, R.L., Whipple, J.W., and Harrison, J.E., 1982, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle, western Montana: U.S. Geological Survey, Miscellaneous Investigations Series Map I-1300, scale 1:250,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS03
+            Enumerated_Domain_Value_Definition: USGS NCGMP, 2020
+            Enumerated_Domain_Value_Definition_Source: U.S. Geological Survey National Cooperative Geologic Mapping Program, 2020, GeMS (Geologic Map Schema) - A standard format for the digital publication of geologic maps: U.S. Geological Survey Techniques and Methods, book 11, chap. B10, 74 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS04
+            Enumerated_Domain_Value_Definition: Neuendorf and others, 2011
+            Enumerated_Domain_Value_Definition_Source: Neuendorf, K.K.E., Mehl Jr., J.P., and Jackson, J.A., 2011, Glossary of Geology (fifth edition): American Geological Institute, Alexandria, Virginia, 779 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS05
+            Enumerated_Domain_Value_Definition: Harrison, unpublished mapping
+            Enumerated_Domain_Value_Definition_Source: Harrison, J.E., unpublished geologic mapping, U.S. Geological Survey.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS06
+            Enumerated_Domain_Value_Definition: Harrison and others, 1969
+            Enumerated_Domain_Value_Definition_Source: Harrison, J.E., Reynolds, M.W., Kleinkopf, M.D., and Pattee, E.C., 1969, Mineral resources of the Mission Mountains Primitive area, Missoula and Lake Counties, Montana: U.S. Geological Survey Bulletin 1261-D 48 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS07
+            Enumerated_Domain_Value_Definition: Mudge and Earhart, unpublished mapping
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., and Earhart, R.L, unpublished geologic mapping, U.S. Geological Survey
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS08
+            Enumerated_Domain_Value_Definition: Mudge, unpublished mapping
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., unpublished geologic mapping, U.S. Geological Survey
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS09
+            Enumerated_Domain_Value_Definition: Mudge, 1972
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., 1972, Pre-Quaternary rocks in the Sun River Canyon area, northwestern Montana: U.S. Geological Survey Professional Paper 663-A, 142 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS10
+            Enumerated_Domain_Value_Definition: Earhart and others, 1976-1977
+            Enumerated_Domain_Value_Definition_Source: Earhart, R.L., Grimes, D.J., Leinz, R.W., and Marks, L.Y., 1976, 1977. Mineral resources of proposed additions to the Scapegoat Wilderness, Powell and Lewis and Clark Counties, Montana: U.S. Geological Survey Bulletin 1430, p. 63
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS11
+            Enumerated_Domain_Value_Definition: Mudge and others, 1974
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., Earhart, R.L., Watts, K.C., Tuchek, E.T., and Rice, W.L., 1974, Mineral resources of the Scapegoat Wilderness, Powell and Lewis and Clark Counties, Montana: U.S. Geological Survey Bulletin 1385-B, 82 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS12
+            Enumerated_Domain_Value_Definition: Whipple and others, unpublished mapping
+            Enumerated_Domain_Value_Definition_Source: Whipple, J.W., Mudge, M.R., and Earhart, R.L., unpublished geologic mapping, U.S. Geological Survey
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS13
+            Enumerated_Domain_Value_Definition: Harris, 1963
+            Enumerated_Domain_Value_Definition_Source: Harris, F.G., III, 1963, Geology of the Dry Creek area, Lewis and Clark County, Montana: Univ. of Missouri, M.A. thesis, 114 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS14
+            Enumerated_Domain_Value_Definition: Viele, 1960
+            Enumerated_Domain_Value_Definition_Source: Viele, G.W., 1960, The geology of the Flat Creek area, Lewis and Clark Counties, Montana: Utah Univ. Ph. D. thesis, 213 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS15
+            Enumerated_Domain_Value_Definition: Schmidt, 1972a
+            Enumerated_Domain_Value_Definition_Source: Schmidt, R.G., 1972a, Geologic map of the Wolf Creek quadrangle, Lewis and Clark Counties, Montana: U.S. Geological Survey Quadrangle Map GQ-974, scale 1:24,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS16
+            Enumerated_Domain_Value_Definition: Schmidt, 1972b
+            Enumerated_Domain_Value_Definition_Source: Schmidt, R.G., 1972b, Geologic map of the Coburn Mountain quadrangle, Lewis and Clark Counties, Montana: U.S. Geological Survey Quadrangle Map GQ-975, scale 1:24,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS17
+            Enumerated_Domain_Value_Definition: Schmidt, 1972c
+            Enumerated_Domain_Value_Definition_Source: Schmidt, R.G., 1972c, Geologic map of the Comb Rock quadrangle, Lewis and Clark Counties, Montana: U.S. Geological Survey Quadrangle Map GQ-976, scale 1:24,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS18
+            Enumerated_Domain_Value_Definition: Schmidt and Strong, 1972
+            Enumerated_Domain_Value_Definition_Source: Schmidt, R.G., and Strong, C.P., Jr., 1972, Geologic map of the Roberts Mountain quadrangle, Lewis and Clark Counties, Montana: U.S. Geological Survey Quadrangle Map GQ-977, scale 1:24,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS19
+            Enumerated_Domain_Value_Definition: Cobban, 1955
+            Enumerated_Domain_Value_Definition_Source: Cobban, W.A., 1955, Cretaceous rocks of northwestern Montana, in Billings Geological Society Guidebook, 6th Annual Field Conference, 1955: p. 107-119
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS20
+            Enumerated_Domain_Value_Definition: Cobban and others, 1959a
+            Enumerated_Domain_Value_Definition_Source: Cobban, W.A., Erdmann, C.W., Lemke, R.W., and Maughan, E.K., 1959a, Colorado Group on Sweetgrass Arch, Montana, in Billings Geological Society Guidebook, 10th Annual Field Conference, 1959: p. 89-92.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS21
+            Enumerated_Domain_Value_Definition: Cobban and others, 1959b
+            Enumerated_Domain_Value_Definition_Source: Cobban, W.A., Erdmann, C.W., Lemke, R.W., and Maughan, E.K., 1959b, Revision of Colorado Group on Sweetgrass Arch, Montana: American Association of Petroleum Geologists Bulletin, v. 43, no. 12, p. 89-92.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS22
+            Enumerated_Domain_Value_Definition: Cobban and others, 1976
+            Enumerated_Domain_Value_Definition_Source: Cobban, W.A., Erdmann, C.W., Lemke, R.W., and Maughan, E.K., 1976, Type sections and stratigraphy of the members of the Blackleaf and Marias River Formations (Cretaceous) of the Sweetgrass Arch, Montana: U.S. Geological Survey Professional Paper 974, 66 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS23
+            Enumerated_Domain_Value_Definition: Deiss, 1939
+            Enumerated_Domain_Value_Definition_Source: Deiss, C.F., 1939, Cambrian stratigraphy and trilobites of northwestern Montana: Geological Society of America Special Paper 18, 135 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS24
+            Enumerated_Domain_Value_Definition: Johns, 1970
+            Enumerated_Domain_Value_Definition_Source: Johns, W.M. 1970, Geology and mineral deposits of Lincoln and Flathead Counties, Montana: Montana Bureau of Mines and Geology Bulletin 79, 182 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS25
+            Enumerated_Domain_Value_Definition: Lyons, 1944
+            Enumerated_Domain_Value_Definition_Source: Lyons, J.B., 1944, Igneous rocks of the Northern Big Belt Range, Montana: Geological Society of America Bulletin, v. 55, no. 4, p. A37.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS26
+            Enumerated_Domain_Value_Definition: Mehnert and Schmidt, 1971
+            Enumerated_Domain_Value_Definition_Source: Mehnert, H.H., and Schmidt, R.G., 1971, Geological Survey Research 1971 [1972]: U.S. Geological Survey Professional Paper 750-A, p. A37
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS27
+            Enumerated_Domain_Value_Definition: Mudge and Earhart, 1978
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., and Earhart, R.L., 1978, Geology of the Bob Marshall Wilderness and study area, Chapter A, in Mineral Resources of the Bob Marshall Wilderness and study area, Lewis and Clark, Teton, Pondera, Flathead, Lake, Missoula, and Powell Counties, Montana: U.S. Geological Survey Open-File Report 78-295, 47 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS28
+            Enumerated_Domain_Value_Definition: Mudge and Sheppard, 1968
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., and Sheppard, R.A., 1968, Provenance of igneous rocks in Cretaceous conglomerates in northwestern Montana, in U.S. Geological Survey Professional Paper 600-D, p. D137-D146
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS29
+            Enumerated_Domain_Value_Definition: Mudge and others, 1962
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., Sando, W.J., and Dutro, J.T., Jr., 1962, Mississippian rocks of Sun River Canyon area, Sawtooth Range, Montana: American Association of Petroleum Geologists Bulletin, v 46, no. 11, p. 2003-2018.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS30
+            Enumerated_Domain_Value_Definition: O'Conner, 1967
+            Enumerated_Domain_Value_Definition_Source: O'Connor, M.P., 1967, Stratigraphy and petrology across the Precambrian Piegan Group - Missoula Group boundary, southern Mission and Swan Ranges, Montana: Montana University Ph. D. thesis.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS31
+            Enumerated_Domain_Value_Definition: Schmidt, 1978
+            Enumerated_Domain_Value_Definition_Source: Schmidt, R.G., 1978, Rocks and mineral resources of the Wolf Creek area, Lewis and Clark and Cascade Counties, Montana: U.S. Geological Survey Bulletin 1441, 91 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS32
+            Enumerated_Domain_Value_Definition: Sommers, 1966
+            Enumerated_Domain_Value_Definition_Source: Sommers, D.A., 1966, Stratigraphy and structure of a portion of the Bob Marshall wilderness area, northwestern Montana: Massachusetts University Ph. D. thesis, 138 p.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS33
+            Enumerated_Domain_Value_Definition: Viele and Harris, 1965
+            Enumerated_Domain_Value_Definition_Source: Viele, G.W., and Harris, F.G., 3d, 1965, Montana Group stratigraphy, Lewis and Clark County, Montana: American Association of Petroleum Geologists Bulletin, v. 49, no. 4, p. 379-417.
+      Attribute:
+        Attribute_Label: DataSourceID [DatSrcID] (ContactsAndFaults, DataSourcePolys, GeologicLines, MapUnitPolys)
+        Attribute_Definition: Source of data; alpha-numeric value used to link to DataSources table (foreign key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS01
+            Enumerated_Domain_Value_Definition: Mudge and others, 2001
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., Earhart, R.L., Whipple, J.W., Harrison, J.E., Munts, S.R., and Silkwood, J.T., 2001, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle, western Montana: a digital database: U.S. Geological Survey, Miscellaneous Investigations Series Map I-1300, version 1.0, 38 p., scale 1:250,000.
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS02
+            Enumerated_Domain_Value_Definition: Mudge and others, 1982
+            Enumerated_Domain_Value_Definition_Source: Mudge, M.R., Earhart, R.L., Whipple, J.W., and Harrison, J.E., 1982, Geologic and structure map of the Choteau 1 x 2 degrees quadrangle, western Montana: U.S. Geological Survey, Miscellaneous Investigations Series Map I-1300, scale 1:250,000.
+      Attribute:
+        Attribute_Label: DataSourcePolys_ID [DSrcPol_ID] (DataSourcePolys)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Example of values: "DSP01"
+      Attribute:
+        Attribute_Label: Definition (GeoMaterialDict, Glossary)
+        Attribute_Definition: Plain-language definition.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Example of values: "A fold, generally convex upward, whose core contains the stratigraphically older rocks."
+      Attribute:
+        Attribute_Label: DefinitionSourceID [DefSrcID] (Glossary)
+        Attribute_Definition: Source of definition; alpha-numeric value used to link to DataSources table (foreign key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS02
+            Enumerated_Domain_Value_Definition: Mudge and others, 1982
+            Enumerated_Domain_Value_Definition_Source: DataSources table
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS03
+            Enumerated_Domain_Value_Definition: USGS NCGMP, 2020
+            Enumerated_Domain_Value_Definition_Source: DataSources table
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DAS04
+            Enumerated_Domain_Value_Definition: Neuendorf and others, 2011
+            Enumerated_Domain_Value_Definition_Source: DataSources table
+      Attribute:
+        Attribute_Label: Description [Descr] (DescriptionOfMapUnits, ContactsAndFaults, GeologicLines)
+        Attribute_Definition: Free-format text description of map unit or the Type and certainty of a line feature. Commonly structured according to one or more accepted traditions (e.g., lithology, thickness, color, weathering and outcrop characteristics, distinguishing features, genesis, age constraints).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain:
+            Example of values from the DescriptionOfMapUnits table: "Mostly noncalcareous, greenish-gray, thinly laminated clay shale with local thin interbeds of dolomite, limestone, sandstone, and conglomerate. Thickness from 21 m to 92 m"
+
+            Example of values from the ContactsAndFaults feature class: "fault, normal, certain"
+      Attribute:
+        Attribute_Label: DescriptionOfMapUnits_ID [DMapUns_ID] (DescriptionOfMapUnits)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Example of values: "DMU01"
+      Attribute:
+        Attribute_Label: DescriptionSourceID [DesSrcID] (DescriptionOfMapUnits)
+        Attribute_Definition: Source(s) of map unit description; alpha-numeric value used to link to DataSources table (foreign key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Multiple values concatenated. Examples of values: "DAS02" and "DAS02 | DAS09 | DAS29"; see DataSources_ID attribute information.
+      Attribute:
+        Attribute_Label: ExistenceConfidence [ExiConf] (ContactsAndFaults, GeologicLines)
+        Attribute_Definition: Confidence that feature exists.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: certain
+            Enumerated_Domain_Value_Definition: Identity of a feature can be determined using relevant observations and scientific judgment; therefore, one can be reasonably confident in the credibility of this interpretation.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: unspecified
+            Enumerated_Domain_Value_Definition: Used for the boundary of a map where no confidence is specified.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+      Attribute:
+        Attribute_Label: FullName (DescriptionOfMapUnits)
+        Attribute_Definition: Name of map unit including identification of containing higher rank unit(s).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Example of values: "Cone Member of the Marias River Shale"
+      Attribute:
+        Attribute_Label: GeologicLines_ID [GeoLin_ID] (GeologicLines)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Example of values: "GEL001"
+      Attribute:
+        Attribute_Label: GeoMaterial [GeoMat] (DescriptionOfMapUnits, GeoMaterialDict)
+        Attribute_Definition: Categorization of map unit based on lithologic and genetic character, term selected from NGMDB standard term list defined in Appendix 1 of GeMS documentation.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Example of values: "------Mafic-composition lava flows" or "------Sandstone and mudstone"
+      Attribute:
+        Attribute_Label: GeoMaterialConfidence [GeoMatConf] (DescriptionOfMapUnits)
+        Attribute_Definition: Describes appropriateness of GeoMaterial term for describing the map unit.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: High
+            Enumerated_Domain_Value_Definition: The term and definition adequately characterize the overall lithologic nature of rocks and sediments in the map unit. Regarding the subjective term "adequately characterize", we refer to context and objectives of this classification as described in the GeMS documentation.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Medium
+            Enumerated_Domain_Value_Definition: The term and definition generally characterize the overall lithology of the map unit, but there are one or more significant minor lithologies that are not adequately described by the selected term.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+      Attribute:
+        Attribute_Label: Glossary_ID [Glo_ID] (Glossary)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Example of values: "GLO01"
+      Attribute:
+        Attribute_Label: HierarchyKey [HKey] (DescriptionOfMapUnits, GeoMaterialDict)
+        Attribute_Definition: String that records hierarchical structure. Has form nn-nn-nn, nnn-nnn, or similar. Numeric, left-padded with zeros, dash-delimited. Each HierarchyKey fragment of each row is the same length to allow text-based sorting of table entries.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Examples of values: "01-17-01" or "02-12"
+      Attribute:
+        Attribute_Label: IdentityConfidence [IdeConf] (ContactsAndFaults, GeologicLines, MapUnitPolys)
+        Attribute_Definition: Confidence that feature is correctly identified.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: certain
+            Enumerated_Domain_Value_Definition: Identity of a feature can be determined using relevant observations and scientific judgment; therefore, one can be reasonably confident in the credibility of this interpretation.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: unspecified
+            Enumerated_Domain_Value_Definition: Used for the boundary of a map where no confidence is specified.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+      Attribute:
+        Attribute_Label: IndentedName [IndNam] (GeoMaterialDict)
+        Attribute_Definition: Name with addition of leading spaces to help show rank within a hierarchical list.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Examples of values: "Sedimentary material" or "------Silt and clay of unspecified origin".
+      Attribute:
+        Attribute_Label: IsConcealed [IsCon] (ContactsAndFaults, GeologicLines)
+        Attribute_Definition: Flag for contacts and faults covered by overlying map unit.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Y
+            Enumerated_Domain_Value_Definition: Yes
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: N
+            Enumerated_Domain_Value_Definition: No
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+      Attribute:
+        Attribute_Label: Label (DescriptionOfMapUnits, ContactsAndFaults, GeologicLines, MapUnitPolys)
+        Attribute_Definition: Plain-text equivalent of the desired annotation for a feature: for example "14 Ma", or "^c" which (when used with the FGDC GeoAge font) results in the geologic map-unit label TRc (with TR run together to make the Triassic symbol).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Examples of values: "Ku" or "Ydi"
+      Attribute:
+        Attribute_Label: LocationConfidenceMeters [LocConfM] (ContactsAndFaults, GeologicLines)
+        Attribute_Definition: Estimated half-width in meters of positional uncertainty envelope; position is relative to other features in database.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Value of -9 indicates value is unknown.
+      Attribute:
+        Attribute_Label: MapUnit (DescriptionOfMapUnits, MapUnitPolys)
+        Attribute_Definition: Short plain-text identifier of the map unit. Used to link to DescriptionOfMapUnits table (foreign key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Cu
+            Enumerated_Domain_Value_Definition: Cambrian rocks undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Du
+            Enumerated_Domain_Value_Definition: Upper and middle Devonian rocks undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Kh
+            Enumerated_Domain_Value_Definition: Horsethief Sandstone and Bearpaw-Horsethief transition unit
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: KJ
+            Enumerated_Domain_Value_Definition: Lower Cretaceous and Jurassic rocks undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Kl
+            Enumerated_Domain_Value_Definition: Latite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Km
+            Enumerated_Domain_Value_Definition: Marias River Shale
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ks
+            Enumerated_Domain_Value_Definition: Diorite sills
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ksmr
+            Enumerated_Domain_Value_Definition: St. Mary River Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ktm
+            Enumerated_Domain_Value_Definition: Two Medicine Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ktv
+            Enumerated_Domain_Value_Definition: Volcanic-rich sedimentary rocks, flows, and tuffs of the Two Medicine Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ku
+            Enumerated_Domain_Value_Definition: Upper and lower Cretaceous rocks undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Kvt
+            Enumerated_Domain_Value_Definition: Virgelle Sandstone and Telegraph Creek Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Mu
+            Enumerated_Domain_Value_Definition: Upper and lower Mississippian rocks undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Pz
+            Enumerated_Domain_Value_Definition: Paleozoic rocks. Includes part or all of Mississippian, Devonian, and Cambrian sequences
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Qa
+            Enumerated_Domain_Value_Definition: Alluvial and colluvial deposits
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Qg
+            Enumerated_Domain_Value_Definition: Glacial deposits
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ql
+            Enumerated_Domain_Value_Definition: Lake deposits
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Qs
+            Enumerated_Domain_Value_Definition: Landslide deposits
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: QTog
+            Enumerated_Domain_Value_Definition: Older gravel
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ta
+            Enumerated_Domain_Value_Definition: Biotite trachyandesite and andesite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Tb
+            Enumerated_Domain_Value_Definition: Basalt
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Td
+            Enumerated_Domain_Value_Definition: Dacite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: TKi
+            Enumerated_Domain_Value_Definition: Trachyandesite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: TKp
+            Enumerated_Domain_Value_Definition: Quartz monzonite porphyry
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: TKr
+            Enumerated_Domain_Value_Definition: Rhyolite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Tla
+            Enumerated_Domain_Value_Definition: Lake deposits
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Tm
+            Enumerated_Domain_Value_Definition: Hornblende monzonite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Tmp
+            Enumerated_Domain_Value_Definition: Monzonite porphyry
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Tva
+            Enumerated_Domain_Value_Definition: Adel mountain volcanics of Lyons
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Yb
+            Enumerated_Domain_Value_Definition: Bonner Quartzite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ybe
+            Enumerated_Domain_Value_Definition: Mcnamara Formation, Bonner Quartzite, and Mount Shields, Shepard, Snowslip, Helena, Empire, and Spokane Formations
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ydi
+            Enumerated_Domain_Value_Definition: Andesite, basaltic andesite, and dacite
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ye
+            Enumerated_Domain_Value_Definition: Empire Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Yes
+            Enumerated_Domain_Value_Definition: Spokane and Empire Formations undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Yg
+            Enumerated_Domain_Value_Definition: Greyson Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ygr
+            Enumerated_Domain_Value_Definition: Garnet range Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Yh
+            Enumerated_Domain_Value_Definition: Helena Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ymi
+            Enumerated_Domain_Value_Definition: Bonner Quartzite and Mount Shields, Shepard, and Snowslip Formations, undivided
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ym
+            Enumerated_Domain_Value_Definition: Mcnamara Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Yms
+            Enumerated_Domain_Value_Definition: Mount Shields Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ys
+            Enumerated_Domain_Value_Definition: Spokane Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ysh
+            Enumerated_Domain_Value_Definition: Shepard Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Ysn
+            Enumerated_Domain_Value_Definition: Snowslip Formation
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Zd
+            Enumerated_Domain_Value_Definition: Diorite sills and local dikes
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+      Attribute:
+        Attribute_Label: MapUnitPolys_ID [MUPs_ID] (MapUnitPolys)
+        Attribute_Definition: Unique alpha-numeric value assigned to each feature (primary key).
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values are unique within this database. Example of values: "MUP0001"
+      Attribute:
+        Attribute_Label: Name (DescriptionOfMapUnits)
+        Attribute_Definition: Name of map unit, as shown in boldface in traditional description of map units. Identifies unit within its hierarchical context.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Examples of values: "Flathead Sandstone" or "Kevin Member"
+      Attribute:
+        Attribute_Label: Notes (DataSources, ContactsAndFaults, DataSourcePolys, GeologicLines, MapUnitPolys)
+        Attribute_Definition: Additional information specific to a particular feature or table entry.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Free text. Example of values: "modified to match printed map"
+      Attribute:
+        Attribute_Label: OBJECTID [OID] [FID] (all)
+        Attribute_Definition: Object identification: an Esri default field that contains an integer value to uniquely identify a row in an attribute table.
+        Attribute_Definition_Source: Esri
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Sequential integer values. CSV files may be auto populated with -1
+      Attribute:
+        Attribute_Label: ParagraphStyle [ParaSty] (DescriptionOfMapUnits)
+        Attribute_Definition: Token that identifies formatting of paragraph(s) within traditional Description of Map Units that correspond to this table entry.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DMU1
+            Enumerated_Domain_Value_Definition: Paragraph style for formatted description of first-rank map unit. Times New Roman, Regular, 10 pt, 12 pt leading, left justified, 66 pt left indent, –20 pt 1st line indent, 3 pt space before
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: DMU2
+            Enumerated_Domain_Value_Definition: Paragraph style for description of a second-order map unit within Description of Map Units table. Such map units are subsidiary to (commonly subdivisions of) first-order map units. Times New Roman, Regular, 10 pt, 12 pt leading, left justified, 66 pt left indent, –10 pt 1st line indent, 3 pt space before.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Heading2
+            Enumerated_Domain_Value_Definition: Heading style for second-order headings within Description of Map Units table. Such headings are subsidiary to the primary heading “Description of Map Units”. Times New Roman, Bold, 10 pt, 12 pt leading, all caps, centered, 12 pt space before.
+            Enumerated_Domain_Value_Definition_Source: USGS NCGMP, 2020
+      Attribute:
+        Attribute_Label: Shape (ContactsAndFaults, DataSourcePolys, GeologicLines, MapUnitPolys)
+        Attribute_Definition: An Esri default field that contains the geometry type (line or polygon).
+        Attribute_Definition_Source: Esri
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Polygon
+            Enumerated_Domain_Value_Definition: Geometry type is a polygon.
+            Enumerated_Domain_Value_Definition_Source: Esri
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: Polyline
+            Enumerated_Domain_Value_Definition: Geometry type is a line.
+            Enumerated_Domain_Value_Definition_Source: Esri
+      Attribute:
+        Attribute_Label: Shape_Area (DataSourcePolys, MapUnitPolys)
+        Attribute_Definition: An Esri default field that contains the area of a polygon. The value is automatically generated in units of the feature class.
+        Attribute_Definition_Source: Esri
+        Attribute_Domain_Values:
+          Range_Domain:
+            Range_Domain_Minimum: 3694.003503
+            Range_Domain_Maximum: 16753775841.029133
+            Attribute_Units_of_Measure: square meters
+            Attribute_Measurement_Resolution: .000001
+      Attribute:
+        Attribute_Label: Shape_Length [Shp_Len] (ContactsAndFaults, DataSourcePolys, GeologicLines, MapUnitPolys)
+        Attribute_Definition: An Esri default field that contains the length of a line or perimeter. The value is automatically generated in the units of the feature class.
+        Attribute_Definition_Source: Esri
+        Attribute_Domain_Values:
+          Range_Domain:
+            Range_Domain_Minimum: 51.315294
+            Range_Domain_Maximum: 1660071.102099
+            Attribute_Units_of_Measure: meters
+            Attribute_Measurement_Resolution: .000001
+      Attribute:
+        Attribute_Label: Source (DataSources)
+        Attribute_Definition: Plain-text short description that identifies the data source.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Example of values: "Mudge and Earhart, 1978"
+      Attribute:
+        Attribute_Label: Symbol (DescriptionOfMapUnits, ContactsAndFaults, GeologicLines, MapUnitPolys)
+        Attribute_Definition: Reference to a line symbol or area-fill symbol that is used on the map graphic to denote the feature. For example, a heavy black line for a fault.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Numbers correspond to FGDC symbolization or a MapUnit. These values also correspond to the supplied Style file. Examples of values: "02.02.01" or "Qg"
+      Attribute:
+        Attribute_Label: Term (Glossary)
+        Attribute_Definition: Plain-language word for a concept. Values are unique within database as a whole.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Values correspond to attributes primarily used in the Type fields. Example of values: "fault, normal"
+      Attribute:
+        Attribute_Label: Type (ContactsAndFaults, GeologicLines)
+        Attribute_Definition: Classifier that specifies what kind of geologic feature is represented by a database element: that a certain line within feature class ContactsAndFaults is a contact, or thrust fault, or water boundary.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: anticline
+            Enumerated_Domain_Value_Definition: A fold, generally convex upward, whose core contains the stratigraphically older rocks.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: anticline, double plunging
+            Enumerated_Domain_Value_Definition: An anticline in which the hinge line is inclined to the horizontal on both ends.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: anticline, overturned
+            Enumerated_Domain_Value_Definition: A fold, generally convex upward, whose core contains the stratigraphically older rocks that has tilted beyond the perpendicular.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: anticline, plunging
+            Enumerated_Domain_Value_Definition: An anticline in which the hinge line is inclined to the horizontal.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: contact
+            Enumerated_Domain_Value_Definition: A plane or irregular surface between two types or ages of rock.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: fault
+            Enumerated_Domain_Value_Definition: A discrete surface or zone of discrete surfaces separating two rock masses across which one mass has slid past the other.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: fault, normal
+            Enumerated_Domain_Value_Definition: A fault in which the hanging wall has moved downward relative to the footwall. The angle of the fault is usually 45-90 degrees, and in most cases close to 60 degrees.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: fault, strike-slip, left-lateral
+            Enumerated_Domain_Value_Definition: A fault on which the movement is parallel to the fault's strike and which the side opposite the observer has been displaced to the left.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: fault, strike-slip, right-lateral
+            Enumerated_Domain_Value_Definition: A fault on which the movement is parallel to the fault's strike and which the side opposite the observer has been displaced to the right.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: fault, thrust
+            Enumerated_Domain_Value_Definition: A fault with a dip of 45 degrees or less over much of its extent, on which the hanging wall has moved upward relative to the footwall.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: map boundary
+            Enumerated_Domain_Value_Definition: A line representing the boundary of the mapping area.
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: monocline
+            Enumerated_Domain_Value_Definition: A local steepening in an otherwise uniform gentle dip.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: sills and dikes
+            Enumerated_Domain_Value_Definition: A tabular igneous intrusion that parallels or cuts across the bedding or foliation of the sedimentary or metamorphic country rock, respectively.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: syncline
+            Enumerated_Domain_Value_Definition: A fold of which the core contains the stratigraphically younger rocks; it is generally concave upward.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: syncline, overturned
+            Enumerated_Domain_Value_Definition: A syncline that has been tilted beyond the perpendicular. Sequence of strata thus appears reversed.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: syncline, plunging
+            Enumerated_Domain_Value_Definition: A syncline in which the hinge line is inclined to the horizontal.
+            Enumerated_Domain_Value_Definition_Source: Neuendorf and others, 2011
+        Attribute_Domain_Values:
+          Enumerated_Domain:
+            Enumerated_Domain_Value: water
+            Enumerated_Domain_Value_Definition: The outline of a body of water (lake) and/or stream.
+            Enumerated_Domain_Value_Definition_Source: Mudge and others, 1982
+      Attribute:
+        Attribute_Label: URL (DataSources)
+        Attribute_Definition: Uniform Resource Locator (URL) or Digital Object Identifier (DOI), identifies a document on the World Wide Web.
+        Attribute_Definition_Source: USGS NCGMP, 2020
+        Attribute_Domain_Values:
+          Unrepresentable_Domain: Example of values: "https://doi.org/10.3133/i1300"
+    Overview_Description:
+      Entity_and_Attribute_Overview: The entity and attribute information provide the tabular data associated with the data set. Please review the detailed descriptions that are provided (the individual attribute descriptions) for information on the values that appear as fields/table entries of the data set.
+      Entity_and_Attribute_Detail_Citation: The database conforms to the USGS Geologic Map Schema (GeMS) with the minor addition of the field “Description” to the ContactsAndFaults and GeologicLines layers. A full description of the GeMS database structure can be accessed at https://doi.org/10.3133/tm11B10.
+  Distribution_Information:
+    Distributor:
+      Contact_Information:
+        Contact_Organization_Primary:
+          Contact_Organization: U.S. Geological Survey - National Geologic Map Database (NGMDB)
+        Contact_Address:
+          Address_Type: mailing address
+          Address: 12201 Sunrise Valley Dr., Mail Stop 908
+          City: Reston
+          State_or_Province: VA
+          Postal_Code: 20192
+          Country: United States
+        Contact_Voice_Telephone: 1-888-ASK-USGS (1-888-275-8747)
+        Contact_Electronic_Mail_Address: ngmdb@usgs.gov
+    Distribution_Liability: Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected. Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.
+    Standard_Order_Process:
+      Digital_Form:
+        Digital_Transfer_Information:
+          Format_Name: Digital Data Set
+          File_Decompression_Technique: Use a file extraction software such as WinZip, 7zip, Peazip
+        Digital_Transfer_Option:
+          Online_Option:
+            Computer_Contact_Information:
+              Network_Address:
+                Network_Resource_Name: https://doi.org/10.5066/P93PTFDV
+      Fees: None. No fees are applicable for obtaining the data set.
+  Metadata_Reference_Information:
+    Metadata_Date: 20231018
+    Metadata_Contact:
+      Contact_Information:
+        Contact_Person_Primary:
+          Contact_Person: Micah A Hernandez
+          Contact_Organization: U.S. Geological Survey, ROCKY MOUNTAIN REGION
+        Contact_Position: Physical Scientist
+        Contact_Address:
+          Address_Type: mailing address
+          Address: Mail Stop 973, W 6th Ave Kipling St
+          City: Lakewood
+          State_or_Province: CO
+          Postal_Code: 80225
+          Country: US
+        Contact_Voice_Telephone: 303-236-1222
+        Contact_Electronic_Mail_Address: mhernandez@usgs.gov
+    Metadata_Standard_Name: FGDC Content Standard for Digital Geospatial Metadata
+    Metadata_Standard_Version: FGDC-STD-001-1998

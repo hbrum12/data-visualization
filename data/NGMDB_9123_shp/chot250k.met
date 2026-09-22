@@ -1,0 +1,342 @@
+Identification_Information:
+  Citation:
+    Citation_Information:
+      Originator:
+        Melvill R. Mudge, Robert L. Earhart, James W. Whipple, Jack E.
+        Harrison, Steven R. Munts, and Jeffery T. Silkwood
+      Publication_Date: 2000
+      Title:
+        Geologic and structure map of the Choteau 1 x 2 degree
+        quadrangle, western Montana: a digital database.
+      Western Montana: a digital database.
+      Edition: Version 1.0
+      Geospatial_Data_Presentation_Form: map
+      Series_Information:
+        Series_Name: Miscellanious Investigations Series
+        Issue_Identification: Map I-1300
+      Publication_Information:
+        Publication_Place: Menlo Park, CA
+        Publisher: U. S. Geological Survey
+      Online_Linkage: URL = http://geopubs.wr.usgs.gov/i-map/i1300/
+
+  Description:
+
+    Abstract:
+
+      The geologic and structure map of Choteau 1 x 2 degree
+      quadrangle (Mudge and others, 1982) was originally converted to
+      a digital format by Jeff Silkwood (U.S.  Forest Service and
+      completed by the U.S. Geological Survey staff and contractor at
+      the Spokane Field Office (WA) in 2000 for input into a
+      geographic information system (GIS).  The resulting digital
+      geologic map (GIS) database can be queried in many ways to
+      produce a variey of geologic maps.  Digital base map data files
+      (topography, roads, towns, rivers and lakes, etc.) are not
+      included: they may be obtained from a variety of commercial and
+      government sources.  This database is not meant to be used or
+      displayed at any scale larger than 1:250,000 (e.g.  1:100,000
+      or 1:24,000.  The digital geologic map graphics and plot files
+      (chot250k.gra/.hp/.eps and chot-map.pdf) that are provided in
+      the digital package are representations of the digital
+      database.  They are not designed to be cartographic products.
+
+    Purpose:
+
+      This dataset was developed to provide geologic map GIS of the
+      Choteau 1:250,000 quadrangle for use in future spatial analysis
+      by a variety of users.  These data can be printed in a variety of
+      ways to display various geologic features or used for digital
+      analysis and modeling.   This database is not meant to be used or
+      displayed at any scale larger than 1:250,000 (e.g.  1:100,000 or
+      1:24,000).
+
+    Supplemental_Information:
+      This GIS consists of two major Arc/Info datasets, a line
+      and polygon file (chot250k) containing geologic contact
+      and structures (lines) and geologic map rock units
+      (polygons), and a point file (chot250kp) containing
+      structural point data for plunging folds.
+
+  Time_Period_of_Content:
+    Time_Period_Information:
+      Single_Date/Time:
+        Calendar_Date: 2000
+    Currentness_Reference: Publication date
+
+  Status:
+    Progress: complete
+    Maintenance_and_Update_Frequency: As needed.
+
+  Spatial_Domain:
+    Bounding_Coordinates:
+      West_Bounding_Coordinate: -114.00
+      East_Bounding_Coordinate: -112.00
+      North_Bounding_Coordinate: 48.00
+      South_Bounding_Coordinate: 47.50
+
+  Keywords:
+    Theme:
+      Theme_Keyword_Thesaurus: none
+      Theme_Keyword: geology
+      Place_Keyword_Thesaurus: none
+      Place_Keyword: Montana
+      Place_Keyword: Choteau
+      Place_Keyword: Powell County
+      Place_Keyword: Lewis and Clark County
+      Place_Keyword: Lake County
+      Place_Keyword: Flathead County
+      Place_Keyword: Missoula County
+      Place_Keyword: Teton County
+      Place_Keyword: Pacific Northwest
+      Place_Keyword: USA
+
+  Access_Constraints: none
+
+  Use_Constraints:
+    This digital database is not meant to be used or displayed at any
+    scale larger than 1:250,000 (e.g. 1:100,000).
+
+    Any hardcopies utilizing these data sets shall clearly indicate
+    their source.  If the user has modified the data in any way
+    they are obligated to describe the types of modifications they
+    have performed on the hardcopy map.  User specifically agrees
+    not to misrepresent these data sets, nor to imply that changes they
+    made were approved by the US Geological Survey.
+
+  Point_of_Contact:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Pamela D. Derkey
+        Contact_Organization: U.S. Geological Survey
+      Contact_Position: geologist
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 904 W. Riverside Ave., Rm. 202
+        City: Spokane
+        State_or_Province: WA
+        Postal_Code: 99201
+        Country: USA
+      Contact_Voice_Telephone: 1-509-368-3114
+      Contact_Facsimile_Telephone: 1-509-368-3199
+      Contact_Electronic_Mail_Address: pderkey@usgs.gov
+
+  Data_Set_Credit:
+    The Choteau geologic map database was initially prepared by Jef
+    Silkwood (U.S.  Forest Service) from the geologic map by Mudge
+    and others (1982).  These preliminary digital files were
+    transferred to the U.S. Geological Survey (USGS) in 1999.
+    Robert J. Miller (USGS) merged the geology (lines and polygons)
+    and structure (lines) files into a single topological ArcInfo
+    dataset. Steven R.  Munts (contractor) digitized additional
+    structural features (folds) from Mudge and others (1982).  The
+    digital files were then augmented with an interim geologic map
+    data model (data base), further attributed and edited, and then
+    plotted and compared to the published geologic map to check for
+    digitizing and attribute errors.  All processing by the U.S.
+    Geological Survey was done in ArcInfo version 7.2.1 installed
+    on a Unix-based Sun Ultra workstation.
+
+    Pamela D. Derkey and Robert J. Miller (both of the USGS)
+    provided technical assistance with the geologic systems data
+    model, metadata, digital documentation, and map projections;
+    Steven R. Munts (contractor) digitized new linework, edited
+    digital files, combined existing data sets, built look-up
+    tables, and prepared the composite dataset.
+  Native_Data_Set_Environment: SunOS, 5.7, sun4u UNIX ARC/INFO version 7.2.1
+
+Data_Quality_Information:
+  Attribute_Accuracy:
+    Attribute_Accuracy_Report:
+      Attribute accuracy was verified by manual comparision of
+      the source with hard copy printouts, plots, and on-screen
+      evaluation.
+
+  Logical_Consistency_Report:
+    Polygon and chain-node topology present.  Segments making up the
+    outer and inner boundaries of a polygon tie end-to-end to
+    completely enclose the area.  Line segments are a set of
+    sequentially numbered coordinate pairs.  No duplicate features
+    exist nor duplicate points in a data string.  Intersecting lines
+    are separated into individual line segments at the point of
+    intersection.  All nodes are represented by a single coordinate
+    pair, which indicates the beginning or end of a line segment.  The
+    neat line was generated by mathematically generating the four
+    sides of the quadrangle, densifying the lines of latitude and
+    projecting the file to a Transverse projection (without a y-shift).
+
+  Completeness_Report:
+    All geologic units were compiled from Mudge and others (1982) at a
+    scale of 1:250,000.
+
+  Positional_Accuracy:
+    Horizontal_Positional_Accuracy:
+      Horizontal_Positional_Accuracy_Report:
+        The horizontal position accuracy for the digital data is no
+        better than 55 meters based on the digitizing RMS error.
+
+  Lineage:
+    Source_Information:
+      Source_Citation:
+        Citation_Information:
+          Originator:
+            Mudge, M.R., Earhart, R.L., Whipple, J.W., and
+            Harrison, J.E.
+          Publication_Date: 1982
+          Title:
+            Geologic and structure map of the Choteau 1 x 2 degree
+            quadrangle, western Montana
+          Geospatial_Data_Presentation_Form: map
+          Series_Information:
+            Series_Name: Miscellaneous Investigations Series
+            Issue_Identification: Map I-1300
+          Publication_Information:
+            Publication_Place: Denver, CO
+            Publisher: U.S. Geological Survey
+      Source_Scale_Denominator: 250000
+      Type_of_Source_Media: paper map
+      Source_Time_Period_of_Content:
+        Time_Period_Information:
+          Single_Date/Time:
+            Calendar_Date: 1982
+        Source_Currentness_Reference: publication date
+      Source_Citation_Abbreviation: Mudge and others (1982)
+      Source_Contribution: This is the source for all the datasets.
+
+    Process_Step:
+      Process_Description:
+        Geologic map (Mudge and others, 1982) was initially
+        prepared by Jef Silkwood (U.S.  Forest Service) and
+        given minimal attributing.  Lithology and faults were
+        digitized (1999)
+
+        The contacts, lithology and faults datasets were
+        compiled electronically into a single topologically
+        correct coverage by R.  J. Miller (USGS) using
+        ARC/INFO ver.  7.2.1 on a Sun Unix system (December,
+        1999).
+
+        S. R. Munts (contractor) edited the dataset and
+        attributed it with an interim geologic data model.  He
+        also digitized the folds from Mudge and others (1982)
+        on an Altek digitizing tablet (RMS input error =
+        0.003) and incorporated the data into the Choteau GIS.
+      Process_Date: 1999 - 2001
+
+Spatial_Data_Organization_Information:
+  Direct_Spatial_Reference_Method: Vector
+  Point_and_Vector_Object_Information:
+    SDTS_Terms_Description:
+      SDTS_Point_and_Vector_Object_Type: Point
+      Point_and_Vector_Object_Count: 3007
+      SDTS_Point_and_Vector_Object_Type: String
+      Point_and_Vector_Object_Count: 8382
+      SDTS_Point_and_Vector_Object_Type: GT-polygon composed of chains
+      Point_and_Vector_Object_Count: 3006
+
+Spatial_Reference_Information:
+  Horizontal_Coordinate_System_Definition:
+    Planar:
+      Grid_Coordinate_System:
+        Grid_Coordinate_System_Name: Transverse Mercator
+        Transverse_Mercator:
+          Scale_Factor_at_Central_Meridian: 1.00000000
+          Longitude_of_Central_Meridian: -113
+          Latitude_of_Projection_Origin: 0
+          False_Easting: 0.000
+          False_Northing: 0.00000
+      Planar_Coordinate_Information:
+        Planar_Coordinate_Encoding_Method: coordinate pair
+        Coordinate_Representation:
+          Abscissa_Resolution: 0.000000266566
+          Ordinate_Resolution: 0.000000266566
+        Planar_Distance_Units: Meters
+    Geodetic_Model:
+      Horizontal_Datum_Name: North American Datum of 1927
+      Ellipsoid_Name: Clarke 1866
+      Semi-major_Axis: 6378206.4
+      Denominator_of_Flattening_Ratio: 294.98
+
+Entity_and_Attribute_Information:
+  Overview_Description:
+    Entity_and_Attribute_Overview:
+      The 'Geologic and structure map of the Choteau 1 x 2 degree
+      quadrangle, Montana: a digital database' report (chot250k.pdf)
+      contains a detailed description of each attribute code and a
+      reference to the associated map symbols on the map source
+      materials.  The GIS includes a geologic line work arc attribute
+      table, chot250k.aat, that relates to the chot250k.con (contact
+      look-up table), chot250k.st2 (structure look-up table),
+      chot250k.lgu (linear geologic units table), and the chot250k.ref
+      (source reference look-up table) files; and a rock unit polygon
+      attribute table, chot250k.pat, that relates to the chot250k.ru
+      (rock unit look-up table) and chot250k.ref (source reference
+      look-up table) files; and a point attribute table, chot250kp.pat,
+      that relates to the chot250p.sym (symbol description look-up
+      table) and the chot250p.ref (source reference look-up table).
+    Entity_and_Attribute_Detail_Citation:
+      See Chot250k.pdf file available at
+      http://geopubs.wr.usgs.gov/i-map/i1300/ for a detailed description
+      of the items in the database.
+
+Distribution_Information:
+  Distributor:
+    Contact_Information:
+      Contact_Organization_Primary:
+        Contact_Organization:
+          U.S. Geological Survey Information
+          Services
+      Contact_Address:
+        Address_Type:
+        Address:
+        City:
+        State_or_Province:
+        Postal_Code:
+        Country:
+      Contact_Voice_Telephone:
+
+  Distribution_Liability:
+    The U.S. Geological Survey (USGS) provides these geographic data
+    "as is".  The USGS makes no guarantee or warranty concerning the
+    accuracy of information contained in the geographic data.  The
+    USGS further makes no warranties, either expressed or implied as
+    to any other matter whatsoever, including, without limitation, the
+    condition of the product, or its fitness for any particular
+    purpose.  The burden for determining fitness for use lies entirely
+    with the user.  Although these data have been processed
+    successfully on computers at the USGS, no warranty, expressed or
+    implied, is made by the USGS regarding the use of these data on
+    any other system, nor does the fact of distribution constitute or
+    imply any such warranty.
+
+    In no event shall the USGS have any liability whatsoever for payment
+    of any consequential, incidental, indirect, special, or tort damages
+    of any kind, including, but not limited to, any loss of profits
+    arising out of use of or reliance on the geographic data or arising
+    out of the delivery, installation, operation, or support by USGS.
+
+    This digital geologic map GIS of the Choteau 1:250,000 quadrangle,
+    Montana, is not meant to be used or displayed at any scale larger
+    than 1:250,000 (e.g. 1:100,000 or 1:24,000).
+Metadata_Reference_Information:
+  Metadata_Date: 20010615
+  Metadata_Contact:
+    Contact_Information:
+      Contact_Organization_Primary:
+        Contact_Organization: U.S. Geological Survey
+        Contact_Person: Pamela D. Derkey
+      Contact_Position: geologist
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 904 West Riverside Avenue, Rm 202
+        City: Spokane
+        State_or_Province: WA
+        Postal_Code: 99201
+        Country: USA
+      Contact_Voice_Telephone: 1-509-368-3114
+      Contact_Facsimile_Telephone: 1-509-368-3199
+      Contact_Electronic_Mail_Address: pderkey@usgs.gov
+  Metadata_Standard_Name: Metadata
+  Metadata_Standard_Version: EGDC-STD-001-1998
+  Metadata_Access_Constraints: none
+  Metadata_Use_Constraints: none
+

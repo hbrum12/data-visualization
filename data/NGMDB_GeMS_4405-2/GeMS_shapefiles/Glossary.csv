@@ -1,0 +1,25 @@
+OBJECTID,Term,Definition,DefinitionSourceID,Glossary_ID
+"1",anticline,"A fold, generally convex upward, whose core contains the stratigraphically older rocks.",DAS04,GLO01
+"2","anticline, double plunging",An anticline in which the hinge line is inclined to the horizontal on both ends.,DAS04,GLO02
+"3","anticline, overturned","A fold, generally convex upward, whose core contains the stratigraphically older rocks that has tilted beyond the perpendicular.",DAS04,GLO03
+"4","anticline, plunging",An anticline in which the hinge line is inclined to the horizontal.,DAS04,GLO04
+"5",certain,"Identity of a feature can be determined using relevant observations and scientific judgment; therefore, one can be reasonably confident in the credibility of this interpretation.",DAS03,GLO05
+"6",contact,A plane or irregular surface between two types or ages of rock.,DAS04,GLO06
+"7",DMU1,"Paragraph style for formatted description of first-rank map unit. Times New Roman, Regular, 10 pt, 12 pt leading, left justified, 66 pt left indent, -20 pt 1st line indent, 3 pt space before",DAS03,GLO07
+"8",DMU2,"Paragraph style for description of a second-order map unit within Description of Map Units table. Such map units are subsidiary to (commonly subdivisions of) first-order map units. Times New Roman, Regular, 10 pt, 12 pt leading, left justified, 66 pt left indent, -10 pt 1st line indent, 3 pt space before.",DAS03,GLO08
+"9",fault,A discrete surface or zone of discrete surfaces separating two rock masses across which one mass has slid past the other.,DAS04,GLO09
+"10","fault, normal","A fault in which the hanging wall has moved downward relative to the footwall. The angle of the fault is usually 45-90 degrees, and in most cases close to 60 degrees.",DAS04,GLO10
+"11","fault, strike-slip, left-lateral",A fault on which the movement is parallel to the fault's strike and which the side opposite the observer has been displaced to the left.,DAS04,GLO11
+"12","fault, strike-slip, right-lateral",A fault on which the movement is parallel to the fault's strike and which the side opposite the observer has been displaced to the right.,DAS04,GLO12
+"13","fault, thrust","A fault with a dip of 45 degrees or less over much of its extent, on which the hanging wall has moved upward relative to the footwall.",DAS04,GLO13
+"14",Heading2,"Heading style for second-order headings within Description of Map Units table. Such headings are subsidiary to the primary heading ""Description of Map Units"". Times New Roman, Bold, 10 pt, 12 pt leading, all caps, centered, 12 pt space before.",DAS03,GLO14
+"15",High,"The term and definition adequately characterize the overall lithologic nature of rocks and sediments in the map unit. Regarding the subjective term ""adequately characterize"", we refer to context and objectives of this classification as described in the GeMS documentation.",DAS03,GLO15
+"16",map boundary,A line representing the boundary of the mapping area.,DAS02,GLO16
+"17",Medium,"The term and definition generally characterize the overall lithology of the map unit, but there are one or more significant minor lithologies that are not adequately described by the selected term.",DAS03,GLO17
+"18",monocline,A local steepening in an otherwise uniform gentle dip.,DAS04,GLO18
+"19",sills and dikes,"A tabular igneous intrusion that parallels or cuts across the bedding or foliation of the sedimentary or metamorphic country rock, respectively.",DAS04,GLO19
+"20",syncline,"A fold of which the core contains the stratigraphically younger rocks; it is generally concave upward.",DAS04,GLO20
+"21","syncline, overturned",A syncline that has been tilted beyond the perpendicular. Sequence of strata thus appears reversed.,DAS04,GLO21
+"22","syncline, plunging",A syncline in which the hinge line is inclined to the horizontal.,DAS04,GLO22
+"23",unspecified,Used for the boundary of a map where no confidence is specified.,DAS03,GLO23
+"24",water,The outline of a body of water (lake) and/or stream.,DAS02,GLO24

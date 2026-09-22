@@ -1,0 +1,2 @@
+Rowid_,PTTYPE,SYMBOL,DESC_
+,plunge,493,arrow head showing direction of plunge of syncline or anticline

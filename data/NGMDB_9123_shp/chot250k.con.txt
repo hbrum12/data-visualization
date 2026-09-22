@@ -1,0 +1,6 @@
+Rowid_,LINECODE,SYMBOL,TYPE,MODIFIER,CERTAINTY,DESC_
+,1,1,contact, , ,contact
+,2,2,contact,approx., ,"contact, approximate (dashed)"
+,5,268,contact,scratch, ,"contact, scratch boundary"
+,11,28,contact, ,uncertain,"contact, uncertain (queried)"
+,81,103,neat, , ,map boundary (lines of latitude or longitude)
