@@ -1,0 +1,83 @@
+﻿Sample_ID,Specimen,Composition,d13C,d18O,Site,ICDES.Anderson,pcarb,Bleached,Measured By,Type,Instrument,d18Ow.SMOW
+BU-89-2E (E2) #2,BU-89-2E,milky sediment,-6.082109729,-14.79177577,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #3,BU-89-2E,brown matrix,8.643655427,-12.69736789,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #4,BU-89-2E,spar,-3.161683563,-18.62873554,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #5,BU-89-2E,wood,-13.80419587,-15.90159174,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #6,BU-89-2E,dark grey matrix,-4.560395684,-14.82882319,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #7,BU-89-2E,wood,-2.36122245,-13.6029505,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #8,BU-89-2E,spar,-3.767681479,-17.79318389,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E2) #9,BU-89-2E,dark grey matrix,-7.082725646,-14.76682546,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E1) #1,BU-89-2E,milky sediment,-8.136463216,-14.69915722,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E1) #2,BU-89-2E,dark grey matrix,-7.376769717,-11.17849979,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E (E1) #3,BU-89-2E,cream sediment,-10.18443156,-10.34348262,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E-E2-1,BU-89-2E,bulk,1.47530371,-11.80421244,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+TM-SED-NT #3 Grey_sample.dxf,TM-SED-NT #3 Grey,sediment ,-5.187473235,-14.71245081,Two Medicine,,,N,Stephanie Plaza-Torres,Sediment,GasBench,
+TM-SED-BU-92-3_sample.dxf,TM-SED-BU-92-3,sediment associated with BU-92-3 brood sausage,-2.300445375,-10.74084167,Two Medicine,,,N,Stephanie Plaza-Torres,Sediment,GasBench,
+TM-SED-KB_sample.dxf,TM-SED-KB,sediment from surface of KB coprolite,-3.734781574,-12.2804781,Two Medicine,,,N,Stephanie Plaza-Torres,Sediment,GasBench,
+TM-SED-TE-2015_sample.dxf,TM-SED-TE-2015,sediment from surface of TE-2015 coprolite,-2.714194704,-8.861847729,Two Medicine,,,N,Stephanie Plaza-Torres,Sediment,GasBench,
+BU-89-2E-E3-DMSed,BU-89-2E,dark milky sediment,-9.387361808,-13.82950946,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E-E3-Milky,BU-89-2E,milky sediment,-5.599496739,-14.1345303,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+BU-89-2E-E3-Sparry,BU-89-2E,spar,-3.619995654,-17.81939234,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+WCA-24-1-04,WCA-24-1-04,limestone,-6.859583307,-10.84871334,Two Medicine,28,,Y,Haley Brumberger,Limestone,Clumped,-7.875701566
+WCA-24-1-11,WCA-24-1-11,limestone,-6.691154312,-11.72677561,Two Medicine,37.8,,Y,Haley Brumberger,Limestone,Clumped,-6.884261906
+WCA-24-1-12,WCA-24-1-12,limestone,-6.796639589,-11.74888486,Two Medicine,47,,Y,Haley Brumberger,Limestone,Clumped,-5.250360618
+WCA-24-1-04,WCA-24-1-04,limestone,-6.745820176,-10.90867204,Two Medicine,31.2,,Y,Haley Brumberger,Limestone,Clumped,-7.311148412
+WCA-24-1-11,WCA-24-1-11,limestone,-6.460647031,-11.48135323,Two Medicine,34.8,,Y,Haley Brumberger,Limestone,Clumped,-7.198596138
+WCA-24-1-12,WCA-24-1-12,limestone,-6.691634597,-11.93266969,Two Medicine,29,,Y,Haley Brumberger,Limestone,Clumped,-8.766524152
+WCA-24-2-09,WCA-24-2-09,vein calcite,-4.227976853,-18.40011237,Two Medicine,107.1,,Y,Haley Brumberger,Vein Calcite,Clumped,-3.111216278
+BU-89-2E-E3-Sparry,BU-89-2E,spar,-3.956367408,-17.53408231,Two Medicine,64.1,,Y,Haley Brumberger,Coprolite,Clumped,-8.245657857
+BU-89-2E-E3-CarbLams,BU-89-2E,bulk brown laminated carbonate,5.196680875,-9.101215514,Two Medicine,64,,Y,Haley Brumberger,Coprolite,Clumped,0.251073817
+BU-89-2E-E3-Milky,BU-89-2E,milky sediment,-5.783883365,-13.9670826,Two Medicine,44.7,,Y,Haley Brumberger,Coprolite,Clumped,-7.887531792
+BU-89-2E-E3-Sparry,BU-89-2E,spar,-3.697775327,-17.88336467,Two Medicine,65.9,,N,Haley Brumberger,Coprolite,Clumped,-8.316816641
+BU-89-2E-E3-DMSed,BU-89-2E,dark milky sediment,-9.475636113,-13.74615518,Two Medicine,47.4,,N,Haley Brumberger,Coprolite,Clumped,-7.190996449
+BU-89-2E-E3-Milky,BU-89-2E,milky sediment,-5.680878427,-14.06243892,Two Medicine,45.5,,N,Haley Brumberger,Coprolite,Clumped,-7.842189957
+WCA-24-1-04,WCA-24-1-04,limestone,-6.579692097,-11.02033064,Two Medicine,,73.06645291,Y,Haley Brumberger,Limestone,GasBench,
+WCA-24-1-11,WCA-24-1-11,limestone,-6.521725152,-11.68880569,Two Medicine,,65.10948302,Y,Haley Brumberger,Limestone,GasBench,
+WCA-24-1-12,WCA-24-1-12,limestone,-6.630670676,-11.45288192,Two Medicine,,71.62171682,Y,Haley Brumberger,Limestone,GasBench,
+WCA-24-2-01,WCA-24-2-01,rhizolith,-7.253384332,-11.82988241,Two Medicine,,55.65765504,Y,Haley Brumberger,Rhizolith,GasBench,
+WCA-24-2-09,WCA-24-2-09,vein calcite,-4.191295831,-18.57062855,Two Medicine,,93.43772338,Y,Haley Brumberger,Vein Calcite,GasBench,
+BU-89-2E-E3-DMSed,BU-89-2E,dark milky sediment,-9.112799563,-13.32892375,Two Medicine,,88.98514739,N,Haley Brumberger,Coprolite,GasBench,
+BU-89-2E-E3-Sparry,BU-89-2E,spar,-3.836249088,-17.79627748,Two Medicine,,84.83258895,Y,Haley Brumberger,Coprolite,GasBench,
+BU-89-2E-E3-Milky,BU-89-2E,milky sediment,-5.7040879,-13.99265348,Two Medicine,,81.85408461,Y,Haley Brumberger,Coprolite,GasBench,
+BU-89-2E-E3-CarbLams,BU-89-2E,bulk brown laminated carbonate,5.5005085,-8.649285638,Two Medicine,,85.0155422,Y,Haley Brumberger,Coprolite,GasBench,
+WCA-24-1-04,WCA-24-1-04,limestone,-6.676298057,-10.97680387,Two Medicine,26.7,,Y,Haley Brumberger,Limestone,Clumped,-8.261634641
+WCA-24-1-11,WCA-24-1-11,limestone,-6.486748575,-11.604106,Two Medicine,37.2,,Y,Haley Brumberger,Limestone,Clumped,-6.87232682
+WCA-24-1-12,WCA-24-1-12,limestone,-6.529733995,-11.24948089,Two Medicine,36.9,,Y,Haley Brumberger,Limestone,Clumped,-6.571848736
+WCA-24-2-09,WCA-24-2-09,vein calcite,-4.322430865,-18.50084929,Two Medicine,98.6,,Y,Haley Brumberger,Vein Calcite,Clumped,-4.293615324
+WCA-24-2-01,WCA-24-2-01,limestone,-6.966728951,-11.69160127,Two Medicine,31.6,,Y,Haley Brumberger,Rhizolith,Clumped,-8.019795055
+WCA-24-1-12,WCA-24-1-12,limestone,-6.591471896,-11.05278171,Two Medicine,28.9,,Y,Haley Brumberger,Limestone,Clumped,-7.903416515
+BU-89-2E-E3-CarbLams,BU-89-2E,bulk brown laminated carbonate,5.420143043,-8.774964027,Two Medicine,51.6,,Y,Haley Brumberger,Coprolite,Clumped,-1.460645987
+WCA-24-1-04,WCA-24-1-04,limestone,-6.6896445,-10.979518,Two Medicine,25.9,,Y,Haley Brumberger,Limestone,Clumped,-8.423870241
+WCA-24-1-11,WCA-24-1-11,limestone,-6.5004098,-11.606661,Two Medicine,36.4,,Y,Haley Brumberger,Limestone,Clumped,-7.023992982
+WCA-24-1-12,WCA-24-1-12,limestone,-6.5433239,-11.252126,Two Medicine,36.1,,Y,Haley Brumberger,Limestone,Clumped,-6.72393949
+WCA-24-2-09,WCA-24-2-09,vein calcite,-4.3396866,-18.501649,Two Medicine,97.6,,Y,Haley Brumberger,Vein Calcite,Clumped,-4.424673124
+WCA-24-2-01,WCA-24-2-01,rhizolith,-6.9795931,-11.694134,Two Medicine,30.8,,Y,Haley Brumberger,Rhizolith,Clumped,-8.176794312
+WCA-24-1-12,WCA-24-1-12,limestone,-6.6049592,-11.055477,Two Medicine,28.1,,Y,Haley Brumberger,Limestone,Clumped,-8.063373107
+BU-89-2E-E3-CarbLams,BU-89-2E,bulk brown laminated carbonate,5.38670703,-8.7782388,Two Medicine,51,,Y,Haley Brumberger,Coprolite,Clumped,-1.566555761
+WCA-24-2-09,WCA-24-2-09,vein calcite,-4.2387243,-18.178312,Two Medicine,100.5,,Y,Haley Brumberger,Vein Calcite,Clumped,-3.720734326
+WCA-24-2-01,WCA-24-2-01,rhizolith,-7.0329964,-11.435936,Two Medicine,34.4,,Y,Haley Brumberger,Rhizolith,Clumped,-7.228582798
+WCA-24-1-11,WCA-24-1-11,limestone,-6.3889743,-11.447673,Two Medicine,31.9,,Y,Haley Brumberger,Limestone,Clumped,-7.717227406
+WCA-24-1-04,WCA-24-1-04,limestone,-6.4067657,-10.798658,Two Medicine,34.6,,Y,Haley Brumberger,Limestone,Clumped,-6.550743968
+WCA-24-1-04,WCA-24-1-04,limestone,-6.3486577,-10.776036,Two Medicine,38.8,,Y,Haley Brumberger,Limestone,Clumped,-5.74407389
+WCA-24-1-12,WCA-24-1-12,limestone,-6.4210775,-11.454193,Two Medicine,34.9,,Y,Haley Brumberger,Limestone,Clumped,-7.152448201
+WCA-24-1-12,WCA-24-1-12,limestone,-7.1626704,-11.859907,Two Medicine,26.8,,Y,Haley Brumberger,Limestone,Clumped,-9.127298637
+WCA-24-1-04,WCA-24-1-04,limestone,-7.0298686,-11.453449,Two Medicine,30.2,,Y,Haley Brumberger,Limestone,Clumped,-8.051642644
+WCA-24-1-11,WCA-24-1-11,limestone,-6.2854319,-11.467614,Two Medicine,31.2,,Y,Haley Brumberger,Limestone,Clumped,-7.87212336
+HN-94-6B (D) #1,HN-94-6B,light grey matrix,-11.93228997,-16.45437328,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (D) #2,HN-94-6B,burrow (filled with light colored matrix),-14.39896868,-16.79006827,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (D) #3,HN-94-6B,cream sediment,-13.72467149,-15.62874505,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #1,HN-94-6B,light grey matrix,-12.32279737,-16.76417288,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #2,HN-94-6B,dark grey matrix,-11.74968429,-15.91699666,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #3,HN-94-6B,dark cream sediment,-16.95829408,-17.78297695,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #4,HN-94-6B,light grey matrix,-12.10129904,-16.78808359,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #5,HN-94-6B,light cream sediment,-16.49759021,-17.70869309,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #6,HN-94-6B,burrow (filled with dark colored matrix),-15.84194884,-17.2777333,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (C) #7,HN-94-6B,burrow,-16.68114449,-17.61475142,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (E) #1,HN-94-6B,dark grey matrix,-11.22921856,-15.86671802,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (E) #2,HN-94-6B,light grey matrix,-12.00896855,-16.64603697,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (E) #3,HN-94-6B,light grey matrix,-12.37417992,-16.50134411,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (G) #2,HN-94-6B,dark grey matrix,-13.00389286,-16.30977493,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (G) #3,HN-94-6B,cream sediment,-16.32004373,-17.50436522,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B (F) #1,HN-94-6B,dark cream sediment,-13.65068062,-16.03210829,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B-G-1,HN-94-6B,grey,-13.47722448,-15.89804328,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
+HN-94-6B-G-1,HN-94-6B,bulk,-13.47722448,-15.89804328,Two Medicine,,,N,Stephanie Plaza-Torres,Coprolite,GasBench,
