@@ -1,0 +1,288 @@
+---
+title: "Plotting Assignment #3"
+subtitle: "Summaries, Facets, and Themes"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+# load packages
+library(ggplot2)
+library(dplyr)
+```
+
+# Data
+```{r}
+# load data
+
+beers <- readxl::read_excel("data/beers.xlsx")
+breweries <- readxl::read_excel("data/breweries.xlsx")
+```
+
+# Plots {#sec-plots}
+
+## Making a plot theme to save time
+```{r}
+# Making a theme
+my_plot_theme <-
+  theme_bw() +
+  theme(
+    plot.title = element_text(size = 11, face = "bold", hjust = 0.5), #enlarging, bolding, centering the title
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.1), #making the y major tick marks bolder than the minor tick marks (also below)
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.05),
+    panel.grid.major.x = element_blank(), #getting rid of x axis lines because the vertical lines are distracting and unnecessary in a box plot (also below)
+    panel.grid.minor.x = element_blank(),
+    axis.title = element_text(size = 10), #setting axis title size
+    axis.text.x = element_text(size = 7, angle = 90, vjust = 0.5, hjust = 1), #setting axis text size, angle, justification
+    legend.title = element_text(size = 11, hjust = 0.5), #setting legend title size
+    legend.text = element_text(size = 11), #setting legend text size
+    legend.margin = margin(t = 2, r = 2, b = 2, l = 2, unit = "pt"), #making the margins of the legend box smaller so it doesn't take up as much room in the plot
+    legend.key.height = unit(0.4, "lines"), #setting the height of the legend key line
+    legend.key.width = unit(1, "lines"), #setting the width of the legend key line
+    legend.position = "inside", #moving the legend to inside of the plot
+    legend.position.inside = c(0.99, 0.98), #setting the legend position in reference to the line below
+    legend.justification = c("right", "top"), #reference frame for setting the legend position
+    legend.box.background = element_rect(
+      #setting the legend to have a white background and a black outline,
+      color = "black",
+      fill = "white",
+      linewidth = 0.25
+    )
+  )
+```
+
+
+## Plot 1: Craft Breweries in Each State
+
+@fig-1 displays, via column chart, the number of craft breweries in each state in decreasing order. Colorado has the most breweries by 8; CO has 47, while the next state, with the second-most breweries (California), has 39. My interpretation is that Colorado's brewery/brewing culture is somehow conducive to variety, such that people come to Colorado to start breweries (like Senator John Hickenlooper!). Also, I think that many people find that the outdoorsy lifestyle of Colorado lends itself to beer-drinking, as well, so there is a market/clientele for all the different breweries to stay open! It is noteworthy that most states have below the average number of breweries, which is approximately 11, so the higher-brewery states are clearly skewing the mean higher.
+```{r}
+#| label: fig-1
+#| fig-cap: Craft breweries in each state, with a black line showing the mean number of breweries across all state.
+#| fig-height: 5
+#| fig-width: 7
+breweries_by_state <- breweries |> #make a new data frame with breweries grouped by state and adding a column "n" that has the number of breweries/entries per grouped state
+  summarize(n = n(), .by = state) |>
+  arrange(desc(n)) |>
+  mutate(state = factor(state, levels = state)) # # convert state to factor with levels in the order of arranged data so that ggplot plots them in descending order, order states by number of breweries
+
+
+breweries_by_state |>
+  ggplot() +
+  aes(x = state, y = n, fill = state) +
+  geom_col(color = "black", linewidth = 0.2) + #giving the columns a skinny (0.2) black outline
+  geom_hline(
+    mapping = aes(yintercept = mean(n), color = "Mean")
+  ) + #calculating the mean # of breweries and adding a horizontal line across with that value, and setting the color to "Mean" for "Mean" show up in the legend
+  scale_color_manual(
+    name = "Mean # of Breweries\nAcross All States", #setting legend title for the color entry
+    values = c("Mean" = "black") #setting the color of "Mean" to black
+  ) +
+  labs(
+    # setting x and y axis labels and the title
+    x = "State",
+    y = "Number of Breweries",
+    title = "Numbers of Breweries in Each State"
+  ) +
+  scale_fill_hue(c = 100, l = 60) + #setting the colors of the bars--this maps each level to an evenly spaced hue on the color wheel, where c is chroma (intensity of color between 0-360) and l is luminence (lightness between 0-100)
+  guides(fill = "none") + #getting rid of the legend since the fill just serves as a visual way to separate each state
+  my_plot_theme
+```
+
+## Plot 2: Craft Beer Styles with Highest Alcohol Content (abv)
+
+@fig-2 shows the top 25 beer styles with the most alcohol content (alcohol by volume, or abv), via column chart in decreasing order. Abv of these beer styles ranges from 0.11 to 0.071 across these top 25. Of this dataset, the mean abv (~0.084) is also right around the median (~0.082), which means that the data is pretty evenly distributed about the median and that there are no huge outliers. The highest abv beers are over 0.1, which is very high (10% + alcohol by volume), and those are mostly the stouts, malt liquors, and barleywines.
+
+```{r}
+#| label: fig-2
+#| fig-cap: 25 craft beer styles with highest alcohol content (alcohol by volume, or abv), with a black line showing average abv.
+#| fig-width: 7
+#| fig-height: 6
+beer_by_abv <- beers |>
+  # exclude beers without abv info
+  filter(!is.na(abv)) |>
+  summarize(
+    #group by beer style and add a column of mean abv
+    .by = "style",
+    mean_abv = mean(abv),
+    n = n() # add column with number of entries per group
+  )
+
+#making a new dataframe with only the top 25 abv beer styles
+beer_by_abv_top25 <- beer_by_abv |>
+  slice_max(mean_abv, n = 25)
+
+
+beer_by_abv_top25 <- beer_by_abv_top25 |>
+  arrange(desc(mean_abv)) |>
+  mutate(style = factor(style, levels = style)) # convert style to factor with levels in the order of arranged data so that ggplot plots them in descending order
+
+beer_by_abv_top25 |>
+  ggplot() +
+  aes(x = style, y = mean_abv, fill = style) +
+  geom_col(color = "black", linewidth = 0.2) +
+  scale_fill_hue(c = 100, l = 60) + #setting the colors of the bars--this maps each level to an evenly spaced hue on the color wheel, where c is chroma (intensity of color between 0-360) and l is luminence (lightness between 0-100)
+  guides(fill = "none") + #getting rid of the legend since the fill just serves as a visual way to separate each style
+  geom_hline(
+    mapping = aes(yintercept = mean(mean_abv), color = "Mean")
+  ) + #calculating the mean abv and adding a horizontal line across with that value, and setting the color to "Mean" to show up in the legend
+  scale_color_manual(
+    name = "Mean abv",
+    values = c("Mean" = "black")
+  ) +
+  scale_y_continuous(breaks = seq(0, 0.1, 0.02)) + # resetting the y axis from 0 to 0.1 to have more tick marks than the default so that it is easier to see values
+  labs(
+    # setting axes and plot titles
+    x = "Beer Style",
+    y = "Average Alcohol by Volume (abv)",
+    title = "Average Alcohol Content For 25 Most Alcoholic Beer Styles"
+  ) +
+  my_plot_theme +
+  theme(
+    axis.title.x = element_text(vjust = 12) #setting the x axis title to be closer to the axis text
+  )
+```
+
+
+## Plot 3: Exploring Bitterness vs. Alcohol Content 
+
+@fig-3 illustrates the relationship between bitterness (measured in international bitterness units, or ibu) and alcohol content (alcohol by volume) in 4 different beer categories: Ale, IPA, Lager, and "Other". The colored dots represent different beer styles, but there are too many for the legend to be legible so here it is just used for illustrative purposes. The line of best fit/linear regression for each of the categories is plotted and the equations are in the bottom-right corners: all have positive correlations, but the ale has the highest slope while the lager has the shallowest slope (IPA and Other have approximately the same slope). The best fit lines, however, are far from perfect representations of the data, with R2 values only ranging from 0.20 (Lager) to 0.44 (IPA). However, generally there is a relationship between bitterness and alcohol content: the more bitter the beer, the higher the alcohol content. 
+
+```{r}
+#| label: fig-3
+#| fig-cap: Exploring the relationship between bitterness (ibu) and alcohol content (abv) for different beer categories, with lines of best fit and their associated equations. Colors represent different styles of beer, just to illustrate the variety (legend not shown because it has too many elements).
+#| fig-width: 7
+#| fig-height: 4
+#| message: FALSE
+beers_ibu_abv <- beers |>
+  # exclude beers without abv or ibu info
+  filter(!is.na(abv), !is.na(ibu), !is.na(category))
+
+
+# make function (from class) to determine linear regression line
+determine_linear_reg_line <- function(ds, formula) {
+  ds |>
+    summarize(
+      n = n(),
+      fit = lm({{ formula }}) |> list(),
+      intercept = coef(fit[[1]])[1],
+      slope = coef(fit[[1]])[2],
+      r2 = summary(fit[[1]])$adj.r.squared
+    ) |>
+    as_tibble() |>
+    mutate(
+      eq = sprintf("abv = %.4f + %.4f * ibu (R2: %.2f)", intercept, slope, r2)
+    )
+}
+
+# apply function to my beers dataset to make sure it works and assign it to a variable tosuppress table in html rendering
+linear_reg_beers <- beers_ibu_abv |>
+  group_by(category) |>
+  determine_linear_reg_line(abv ~ ibu)
+
+
+beers_ibu_abv |>
+  ggplot() +
+  aes(x = ibu, y = abv) +
+  geom_point(
+    aes(fill = style),
+    size = 2,
+    shape = 21,
+    color = "black",
+    stroke = 0.2
+  ) +
+  geom_smooth(
+    method = "lm",
+    color = "black",
+    linewidth = 0.5,
+    se = FALSE
+  ) +
+  # geom_text(  # commented this out because I wanted my equations to have white boxes around them, which required geom_label() instead of geom_text()
+  #   data = beers_ibu_abv |>
+  #     group_by(category) |>
+  #     determine_linear_reg_line(abv ~ ibu),
+  #   inherit.aes = FALSE,
+  #   mapping = aes(label = eq, x = Inf, y = -Inf),
+  #   hjust = 1.02,
+  #   vjust = -0.4,
+  #   size = 2.5
+  # ) +
+  geom_label(
+    data = beers_ibu_abv |>
+      group_by(category) |>
+      determine_linear_reg_line(abv ~ ibu),
+    inherit.aes = FALSE,
+    mapping = aes(label = eq, x = Inf, y = -Inf),
+    hjust = 1.02,
+    vjust = -0.4,
+    size = 2.5,
+    fill = "white", # box color
+    color = "black", # text color
+    linewidth = 0.2 # border thickness
+  ) +
+  facet_wrap(~category) + # faceting by category
+  labs(
+    title = "Bitterness (ibu) vs. Alcohol Content (abv) of Different Beer Categories",
+    x = "Mean Bitterness (ibu)",
+    y = "Mean Alcohol Content (abv)"
+  ) +
+  scale_y_continuous(breaks = seq(0, 0.1, 0.02)) + # resetting the y axis from 0 to 0.1 to have more tick marks than the default so that it is easier to see values
+  scale_x_continuous(breaks = seq(0, 140, 20)) + # resetting the y axis from 0 to 0.1 to have more tick marks than the default so that it is easier to see values
+  my_plot_theme +
+  theme(
+    legend.position = "none", #removing legend since there are too many colors for it to be legible
+    axis.text.x = element_text(angle = 0, hjust = 0.5), # overwriting my plot theme so the axis text is horizontal instead of vertical
+    panel.grid.major.x = element_line(color = "black", linewidth = 0.1), # adding x axis lines back in since it's a scatterplot (same as below)
+    panel.grid.minor.x = element_line(color = "black", linewidth = 0.05)
+  )
+```
+
+
+# References
+
+::: {#refs}
+:::

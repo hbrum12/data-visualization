@@ -1,0 +1,230 @@
+---
+title: "Plotting assignment #2"
+subtitle: "Labels, Geoms, and Filters"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+
+# load packages
+library(ggplot2)
+library(dplyr)
+library(readr)
+# load script files
+```
+
+# Data
+
+```{r}
+# load lemur data and set show_col_types to false to suppress the message in the html
+lemurs <- read_csv(
+  "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-08-24/lemur_data.csv",
+  show_col_types = FALSE
+)
+
+#make smaller dataset with only adult lemur data and fewer columns of interest, filtering so that only adult lemurs are included.
+adult_lemurs <- lemurs |>
+  filter(age_category == "adult") |>
+  select(
+    name,
+    sex,
+    dob,
+    birth_month,
+    dod,
+    age_at_death_y,
+    age_max_live_or_dead_y,
+    n_known_offspring,
+    age_at_wt_y,
+    weight_g
+  )
+```
+
+# Lemur Plots {#sec-plots}
+
+## Lemur Weight Comparison Between Sexes
+
+@fig-1 is a boxplot showing the distribution of lemur weights in grams in female (pink) and male (blue) lemurs. The median (center line), interquartile range (box size), and spread (whiskers) of female lemur weights are similar to those of male lemur weights. The data are not very symmetric about the median: the upper quartiles in both the female and male data have a larger spread than any of the other quartiles. The biggest difference between the two sexes is that the female lemur outlier points are significantly higher. Upon digging through the data, it looks like a lemur named "Sabina" weighed in multiple times between 6,000-10,000 grams between 1989 and 1991. According to Duke's website, she was put on a diet in 1991 and slimmed down. 
+
+
+```{r}
+#| label: fig-1
+#| fig-cap: A boxplot comparing lemur weights in grams, separated by sex. Note the outlier--a lemur named Sabina at the Duke Lemur Center, who was overweight (twice the size of a typical lemur of her species!) between 1989-1991.
+
+adult_lemurs |>
+  ggplot() +
+  aes(x = sex, y = weight_g, fill = sex) + #mapping variables such that the x axis and colors are separated by sex and the y axis shows weight in grams
+  theme_bw() + #setting a base theme to get rid of grey plot background
+  geom_boxplot(
+    median.linewidth = 0.5, #setting line widths to be consistent
+    staplewidth = 0.05,
+    outlier.shape = 21, #setting the shape to be a fillable circle so a black outline around each point is present, which makes it easier to see individual points
+    outlier.size = 2, #setting point size to be bigger
+    outlier.fill = "pink"
+  ) + #setting point color for outliers
+  scale_fill_manual(values = c("F" = "pink", "M" = "#a0cbffff")) + #manually setting colors for the boxes, females are pink while males are blue.
+  labs(
+    x = "Sex", #changing the x axis label to have a capital "S"
+    y = "Weight (grams)", #labeling the y axis
+    title = "Lemur Weight Comparison by Sex"
+  ) +
+  scale_x_discrete(labels = c("Female", "Male")) + #setting the axis values to be full words instead of just letters ("Female" and "Male" vs. "F" and "M")
+  scale_y_continuous(breaks = seq(0, 10000, 2000)) + #setting the y axis between 0 and 10,000 with steps every 2,000--this also results in more major tick marks than the default setting and makes the plot easier to read/evaluate
+  theme(
+    plot.title = element_text(size = 11, face = "bold", hjust = 0.5), #enlarging, bolding, and centering the plot title
+    legend.position = "none", #getting rid of the legend since the labels are straightforward
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.1), #setting the y axis grid to have wider major lines than minor lines
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.05),
+    panel.grid.major.x = element_blank(), #getting rid of the x axis grid since there are only two options and they are separated by enough space (the line was distracting)
+    axis.title = element_text(size = 10) #setting axis size
+  )
+
+
+```
+
+## Lemur Age vs. Weight
+
+@fig-2 is a scatterplot showing lemur age in years vs. weight in grams, with colors separated by sex and a line of best fit with a non-linear formula superimposed on top for each sex (red is female, blue is male). This plot depicts individuals more than once--in other words, most lemurs were weighed more than once, and each weight/date combination is represented by a point on the plot. Again, the outlier (Sabina) is shown as the points between 6,000-10,000 grams, while a majority of the lemur weights are below 4,000 grams. The lines of best fit for each sex are similar, with the male (blue) line extending slightly further out and up to the right of the plot, indicating that the oldest lemur weighed was a male. The lines also indicate that the fastest weight gain (a.k.a., the steepest slope) occurs between 0-5 years, and then weight increases slowly until death. 
+
+
+```{r}
+#| label: fig-2
+#| fig-cap: A scatterplot showing lemur ages vs weights, with colors indicating sex (red = female; blue = male). Many individuals are weighed more than once, with each data point representing a specific combination of date + weight.
+#| message: false
+
+adult_lemurs |>
+  ggplot() +
+  aes(x = age_at_wt_y, y = weight_g, color = sex) + #mapping variables
+  geom_point(alpha = 0.1) + #plotting points and setting transparency (10% opaque, so very transparent, for ease of seeing points and patterns)
+  scale_color_manual(
+    values = c(F = "#ff666eff", M = "#6068ffff"),
+    labels = (c(F = "Female", M = "Male"))
+  ) + #manually setting the colors to be red and blue for female and male, respectively, and changing the labels so they are full words instead of letters
+  geom_smooth(se = FALSE) + #adding a line of best fit and taking away the standard error cloud
+  theme_bw() + #setting a base theme
+  labs(
+    #adding x, y, legend (color), and title labels
+    x = "Age at Weight (years)",
+    y = "Weight (grams)",
+    title = "Lemur Age vs. Weight",
+    color = "Sex"
+  ) +
+  scale_y_continuous(breaks = seq(0, 10000, 2000)) + #setting the y scale to be from 0-10,000 in steps of 2,000--makes the plot more legible
+  scale_x_continuous(breaks = seq(0, 40, 5)) + #setting the x scale to be from 0-40 with major axis ticks every 5 years to make the data more legible
+  theme(
+    plot.title = element_text(size = 11, face = "bold", hjust = 0.5), #enlarging, bolding, and centering title
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.1), #making line widths for the grid bigger for the major ticks and smaller for the minor ticks
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.05),
+    panel.grid.major.x = element_line(color = "black", linewidth = 0.1),
+    panel.grid.minor.x = element_line(color = "black", linewidth = 0.05),
+    axis.title = element_text(size = 10), #setting axes title text size
+    legend.position = "inside", #moving the legend to inside of the plot
+    legend.position.inside = c(0.99, 0.98), #setting the legend position in reference to the line below
+    legend.justification = c("right", "top"), #reference frame for setting the legend position
+    legend.box.background = element_rect(
+      color = "black",
+      fill = "white",
+      linewidth = 0.25
+    ) #setting the legend to have a white background and a black outline,
+  )
+
+```
+
+## Lemurs Born in Each Month
+
+@fig-3 is a bar plot showing how many lemurs were born in each month. Because the lemurs are almost all counted more than once (e.g., each lemur has multiple rows in the dataset due to multiple weigh-ins), this data is likely not perfectly representative of the actual distribution of lemur births. Regardless, the plot shows that March and April likely have the highest birth rates, with ~800 more lemurs born in March than the next highest month (July), and still ~700 more born in April than in March. This plot suggests that September has the least amount of births, closely followed by November. The colors serve simply to separate each month visually.
+
+```{r}
+#| label: fig-3
+#| fig-cap: A bar plot illustrating how many lemurs were born in each month. Note that--as in the previous plots--most lemurs are counted more than once (due to multiple weighings), artificially and unevenly inflating the  numbers of lemurs born in each month.
+
+adult_lemurs |>
+  ggplot() +
+  aes(x = birth_month, fill = factor(birth_month)) + #mapping the variables and using factor() to make codes for each unique birth month entry so that scale_fill can be used below
+  theme_bw() + #setting base theme
+  geom_bar(color = "black") + #setting the outline color for the bars
+  labs(
+    x = "Birth Month", #x axis label
+    y = "Number of Lemurs Born", #y axis label
+    title = "Lemurs Born in Each Month"
+  ) + #plot title
+  scale_y_continuous(breaks = seq(0, 10000, 2000)) + #setting the y scale between 0-10,000 so that there are major breaks every 2,000
+  scale_x_continuous(
+    breaks = c(1:12),
+    labels = c(
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    )
+  ) + #setting the x axis to change the numbers in the dataset (1.00-12.00) into the months of the year they represent
+  scale_fill_hue(c = 100, l = 60) + #setting the colors of the bars--this maps each level to an evenly spaced hue on the color wheel, where c is chroma (intensity of color between 0-360) and l is luminence (lightness between 0-100)
+  guides(fill = "none") + #getting rid of the legend since the colors just serve as a visual way to separate each month
+  theme(
+    plot.title = element_text(size = 11, face = "bold", hjust = 0.5), #enlarging, bolding, centering the title
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.1),
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.05),
+    panel.grid.major.x = element_blank(), #getting rid of x axis lines because the vertical lines are distracting and unnecessary in a box plot (also below)
+    panel.grid.minor.x = element_blank(),
+    axis.title = element_text(size = 10), #setting axis text size
+    axis.text.x = element_text(angle = 45, vjust = 0.65)
+  ) #rotating and adjusting the vertical position of x axis scale labels so longer entries can be seen in full
+```
+
+# References
+
+::: {#refs}
+:::

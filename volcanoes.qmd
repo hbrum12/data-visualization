@@ -1,0 +1,365 @@
+---
+title: "Plotting Assignment #4"
+subtitle: "Pivots, Joins, and Factors"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+
+# load packages
+library(tidyverse)
+# library(ggplot2)
+# library(dplyr)
+# library(forcats)
+
+```
+
+# Data
+
+```{r}
+# load and save data
+
+icecore_sulfur <- readxl::read_excel("data/icecore_sulfur.xlsx")
+eruptions <- readxl::read_excel("data/eruptions.xlsx")
+volcanos <- readxl::read_excel("data/volcanos.xlsx")
+
+# color blind palettes
+# The palette with grey:
+cbPalette <- c(
+  "#999999",
+  "#E69F00",
+  "#56B4E9",
+  "#009E73",
+  "#F0E442",
+  "#0072B2",
+  "#D55E00",
+  "#CC79A7"
+)
+
+# The palette with black:
+cbbPalette <- c(
+  "#000000",
+  "#E69F00",
+  "#56B4E9",
+  "#009E73",
+  "#F0E442",
+  "#0072B2",
+  "#D55E00",
+  "#CC79A7"
+)
+
+
+```
+
+# Plots {#sec-plots}
+
+```{r}
+# making custom plot theme
+my_plot_theme <-
+  theme_bw() +
+  theme(
+    plot.title = element_text(size = 11, face = "bold", hjust = 0.5), #enlarging, bolding, centering the title
+    panel.grid.major.y = element_line(color = "black", linewidth = 0.06), #making the major tick marks bolder/heavier than the minor tick marks (also below)
+    panel.grid.minor.y = element_line(color = "black", linewidth = 0.03),
+    panel.grid.major.x = element_line(color = "black", linewidth = 0.06),
+    panel.grid.minor.x = element_line(color = "black", linewidth = 0.03),
+    axis.title = element_text(size = 10), #setting axis title size
+  )
+```
+
+
+## Plot 1 -- Ice Core Sulfur Levels
+
+@fig-1 displays sulfur anomalies in (ng/g) from 500-706 CE. As sulfur anomalies in ice cores usually come from atmospheric deposition, which in turn usually comes from volcanos, these anomalies should reflect large eruptions at the times when there is a spike in sulfur concentrations. I would also expect that, where the spikes are larger in Greenland vs. Antarctica (and vice versa), the volcanic eruption occured in the corresponding hemisphere (e.g., Northern vs. Southern, respectively). 
+
+```{r}
+#| label: fig-1
+#| fig-cap: Sulfur (ng/g) vs. Year between 500-706 CE in Greenland and Antarctic ice cores.
+
+# pivot sulfur data to long
+sulfur_long <- icecore_sulfur |>
+  pivot_longer(
+    c("neem", "wdc"),
+    names_to = "core_location",
+    values_to = "sulfur_ng_g"
+  )
+# filtering all NA values in the "core_location" and "sulfur_ng_g" and "year" columns
+sulfur_long <- sulfur_long |>
+  filter(!is.na(sulfur_ng_g), !is.na(core_location), !is.na(year))
+
+# making the levels in the metric (now a factor column) more descriptive and putting it in a new dataset
+sulfur_long_fct <- sulfur_long |>
+  mutate(
+    core_location = core_location |>
+      as_factor() |>
+      fct_recode(
+        "Greenland Ice Core Sulfur (NEEM)" = "neem",
+        "Antarctica Ice Core Sulfur (WDC)" = "wdc"
+      )
+  )
+
+sulfur_long_fct |>
+  ggplot() +
+  aes(x = sulfur_ng_g, y = year, color = core_location) +
+  geom_point() +
+  scale_color_manual(values = cbPalette[c(2, 6)]) + # colors from color blind palette
+  facet_wrap(~core_location, ncol = 2) + # faceting by core_location to separate Greenland data from Antarctica data, instructions say to do nrow = 2 but I flipped my axes to be more core-like (vertical) so I did ncol = 2 instead
+  my_plot_theme +
+  theme(strip.text = element_text(size = 10, face = "bold")) + # bolding titles of each plot
+  scale_x_continuous(breaks = seq(0, 200, 40)) + # resetting x axis to have more breaks
+  scale_y_continuous(breaks = seq(500, 710, 30)) + # resetting y axis breaks
+  coord_fixed(ylim = c(500, 710)) + # making coordinate fixed so it doesn't cut off 710
+  labs(
+    x = latex2exp::TeX("$Sulfur\\ \\left[ \\frac{ng}{g} \\right]$"),
+    y = "Year (CE)"
+  ) +
+  guides(color = "none") # removing legend
+
+```
+
+## Plot 2 -- Eruptions between 500-706 CE
+I would expect @fig-2 to corroborate my hypothesis from @fig-1 (that the sulfur spikes should reflect large eruptions at the time of the spike), but in fact it does not really do so. There are moderate to large/very large eruptions spread out from 500 to 706 CE, and only one eruption is significantly/notably large at the time of a big sulfur spike (sulfur spikes show up around ~500, ~540, ~575, ~630, ~680 CE) in the core(s). Overall, it is clear that large to very large eruptions (4 to 6 on the Volcanic Explosivity Index) are more common in this ~200+ year span than the sulfur data from the ice cores would suggest. In fact, of the three biggest eruptions (~650 and two in ~680-685), only 1 seems to correspond with a sulfur anomaly represented in @fig-1. There are three possible reasons: 1) the sulfur data from the ice cores underrepresents large eruptions; 2) not all eruptions produce strong sulfur spikes in ice cores; 3) there may be other factors influencing sulfur deposition. It is also interesting that there were no eruptions above 60° or below -30° latitude during this interval, though there are volcanos in those areas, as seen in @fig-3.
+
+```{r}
+#| label: fig-2
+#| fig-cap: Latitude vs. Start Year for volcanic eruptions that occurred between 500-706 CE, with color indicating Primary Volcano Type and size indicating Volcanic Explosivity Index (VEI).
+
+# filtering eruptions to remove rows with VEI = NA and include only those with start years between 500-706 (the bounds of the sulfur dataset)
+eruptions_filtered <- eruptions |>
+  filter(!is.na(vei), start_year >= 500 & start_year <= 706)
+
+# joining volcano data to eruptions data by the "volcano_number" column, which they have in common
+eruptions_volcanos <- eruptions_filtered |>
+  left_join(volcanos, by = "volcano_number")
+
+# mutating "primary_volcano_type" column into a factor and collapsing the plurals + singulars of the same type into the same category, then arranging by most -> least common
+eruptions_volcanos <- eruptions_volcanos |>
+  mutate(
+    primary_volcano_type = as_factor(primary_volcano_type) |>
+      fct_collapse(
+        "Caldera" = c("Caldera", "Caldera(s)"),
+        "Stratovolcano" = c("Stratovolcano", "Stratovolcano(es)"),
+        "Lava Dome" = c("Lava dome(s)")
+      ) |>
+      fct_infreq()
+  )
+
+# load metadata sheet and turn vei_info column into an ordered factor column
+metadata_volcanos <- readxl::read_excel(
+  "data//metadata.xlsx",
+  sheet = "volcanos"
+) |>
+  mutate(vei_info = fct_inorder(factor(vei_info), ordered = TRUE))
+
+# joining the metadata_volcanos sheet to the eruptions sheet by vei, relocating the vei_info column to after the vei column for ease of interpretation
+eruptions_volcanos_meta <- eruptions_volcanos |>
+  left_join(metadata_volcanos, by = "vei") |>
+  relocate("vei_info", .after = "vei")
+
+# plotting
+eruptions_volcanos_meta |>
+  ggplot() +
+  aes(
+    y = latitude,
+    x = start_year,
+    color = primary_volcano_type,
+    size = vei_info
+  ) +
+  geom_point() +
+  my_plot_theme +
+  scale_color_manual(values = cbPalette[c(2:8)]) + # color blind palette
+  labs(
+    title = "Latitude vs. Start Year: \n Volcanic Eruptions between 500-706 CE",
+    x = "Start Year (CE)",
+    y = "Latitude (Degrees)",
+    color = "Primary Volcano Type",
+    size = "Volcanic Explosivity Index"
+  ) +
+  guides(color = guide_legend(order = 1), size = guide_legend(order = 2)) +
+  scale_y_continuous(limits = c(-90, 90), breaks = seq(-90, 90, 30)) +
+  theme(
+    legend.title = element_text(size = 10), #setting legend title size
+    legend.text = element_text(size = 9), #setting legend text size
+    legend.margin = margin(t = 2, r = 2, b = 2, l = 2, unit = "pt"), #making the margins of the legend box smaller so it doesn't take up as much room in the plot
+    legend.key.height = unit(0.4, "lines"), #setting the height of the legend key line
+    legend.key.width = unit(1, "lines"), #setting the width of the legend key line
+    legend.background = element_blank(),
+    legend.box.background = element_rect(
+      #setting the legend to have a white background and a black outline,
+      color = "black",
+      fill = "white",
+      linewidth = 0.2
+    )
+  )
+
+#    + # commented out the below lines because it made the plot really messy
+#   geom_text(
+#     map = aes(label = vei_info, color = NULL), # labels each point with the associated vei_info for that data point; color = NULL makes it so that the color of the text doesn't change according to a parameter but rather stays black
+#     hjust = 0.5, # horizontal justification over the points; 0.5 is centered
+#     vjust = 0.5, # vertical justification over the points; 0.5 is centered
+#     show.legend = FALSE # suppresses legend entry since info would be superimposed over points
+#   )
+```
+
+## Plot 3 -- Distribution of Volcanoes (Lat/Long), Volcanic Explosivity Index, and Volcano Type
+@fig-3 shows the geographic distribution of different volcano types with different eruption sizes by latitude/longitude, all in the last ~11,300 years. Handily, the volcanos along the eastern Pacific ocean and the volcanos in the "Ring of Fire" mainly show up as large-to-very-very-large-erupting stratovolcanos, which correspond to subduction zone locations and fit with general knowledge of convergent subduction zone plate boundaries and associated features. What is especially interesting is how most of the eruptions seen in this plot are relatively large; while the smaller points could definitely be covered by the larger points, I am still generally somewhat surprised at the frequency of such large eruptions, regardless of the frequency of the smaller ones.
+
+```{r}
+#| label: fig-3
+#| fig-cap: Geographic distribution of volcanos (lat/long), points colored by volcano type and sized according to VEI.
+
+# make new dataframe with all volcano data + vei info
+all_eruptions <- eruptions |>
+  filter(!is.na(vei))
+
+all_volcanos <- volcanos |>
+  filter(!is.na(latitude), !is.na(longitude), !is.na(primary_volcano_type))
+
+# joining volcano data to new eruptions dataframe by the "volcano_number" column, which they have in common
+all_eruptions_volcanos <- all_eruptions |>
+  left_join(all_volcanos, by = "volcano_number")
+
+# mutating "primary_volcano_type" column into a factor and collapsing the plurals + singulars of the same type into the same category, then putting other stuff in "Other"
+all_eruptions_volcanos <- all_eruptions_volcanos |>
+  mutate(
+    primary_volcano_type = as_factor(primary_volcano_type) |>
+      fct_collapse(
+        "Caldera" = c("Caldera", "Caldera(s)"),
+        "Stratovolcano" = c(
+          "Stratovolcano",
+          "Stratovolcano(es)",
+          "Stratovolcano?"
+        ),
+        "Shield" = c("Shield", "Shield(s)"),
+        "Other" = c(
+          "Pyroclastic shield",
+          "Pyroclastic cone(s)",
+          "Crater rows",
+          "Lava cone",
+          "Fissure vent(s)",
+          "Complex(es)",
+          "Pyroclastic cone",
+          "Maar(s)",
+          "Tuff cone(s)",
+          "Subglacial",
+          "Lava dome",
+          "Lava dome(s)"
+        )
+      )
+  )
+
+# load metadata sheet and turn vei_info column into an ordered factor column
+metadata_volcanos <- readxl::read_excel(
+  "data//metadata.xlsx",
+  sheet = "volcanos"
+) |>
+  mutate(vei_info = fct_inorder(factor(vei_info), ordered = TRUE))
+
+# joining the metadata_volcanos sheet to the eruptions sheet by vei, relocating the vei_info column to after the vei column for ease of interpretation
+all_eruptions_volcanos_meta <- all_eruptions_volcanos |>
+  left_join(metadata_volcanos, by = "vei") |>
+  relocate("vei_info", .after = "vei")
+
+# set up so that "Other" category is last in the legend
+all_eruptions_volcanos_meta <- all_eruptions_volcanos_meta |>
+  mutate(
+    primary_volcano_type = factor(
+      primary_volcano_type,
+      levels = c(
+        setdiff(unique(primary_volcano_type), "Other"), # all except "Other"
+        "Other"
+      )
+    )
+  )
+
+
+all_eruptions_volcanos_meta |>
+  ggplot() +
+  aes(
+    y = latitude,
+    x = longitude,
+    color = primary_volcano_type,
+    size = vei_info
+  ) +
+  geom_point() +
+  my_plot_theme +
+  labs(
+    title = "Geographic Distribution of Volcano Types \nwith Explosivity Index",
+    x = "Longitude (Degrees)",
+    y = "Latitude (Degrees)",
+    color = "Primary Volcano Type",
+    size = "Volcanic Explosivity Index"
+  ) +
+  guides(color = guide_legend(order = 1), size = guide_legend(order = 2)) +
+  scale_x_continuous(breaks = seq(-180, 180, 60)) + # setting x axis value breaks
+  coord_fixed(xlim = c(-180, 180), ylim = c(-90, 90)) + # making coordinate fixed so it doesn't cut off 180
+  scale_y_continuous(breaks = seq(-90, 90, 30)) + # adding more y axis value breaks
+  scale_color_manual(values = cbPalette) + # color blind palette
+  theme(
+    legend.title = element_text(size = 10), #setting legend title size
+    legend.text = element_text(size = 9), #setting legend text size
+    legend.margin = margin(t = 2, r = 2, b = 2, l = 2, unit = "pt"), #making the margins of the legend box smaller so it doesn't take up as much room in the plot
+    legend.key.height = unit(0.4, "lines"), #setting the height of the legend key line
+    legend.key.width = unit(1, "lines"), #setting the width of the legend key line
+    legend.spacing.y = unit(0.05, "cm"), # tighter spacing
+    legend.background = element_blank(),
+    legend.box.background = element_rect(
+      #setting the legend to have a white background and a black outline,
+      color = "black",
+      fill = "white",
+      linewidth = 0.2
+    )
+  )
+```
+
+
+# References
+
+::: {#refs}
+:::

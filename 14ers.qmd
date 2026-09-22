@@ -1,0 +1,150 @@
+---
+title: "Colorado 14ers"
+subtitle: "Exploration Using Plots in ggplot2"
+author: "Haley Brumberger"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+number-sections: true
+number-offset: 0
+toc: true
+toc-depth: 2
+fig-width: 6
+fig-height: 4
+df-print: kable
+embed-resources: true
+format: 
+  html: 
+    highlight-style: dracula
+    code-tools: true
+    code-fold: show
+    code-summary: "Show the code"
+    code-line-numbers: true
+    code-link: true # only works if code-line-numbers: false
+    toc-float: true
+  docx: 
+    toc-title: "Table of Contents"
+    fig-dpi: 600
+    execute:
+      echo: false
+knitr: 
+  opts_chunk: 
+    fig.path: "plots/"
+    fig.keep: "all"
+    dev: ['png', 'pdf']
+    dev.args: 
+      pdf: 
+        encoding: 'WinAnsi'
+        useDingbats: false
+bibliography: references.bib # if using references, need a .bib file
+#csl: gpl.csl # find your preferred citation style at https://www.zotero.org/styles
+#css: style.css # optional html styling
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table
+  ref-hyperlink: true
+editor: source
+---
+
+# Setup
+
+Using `r R.version.string` , @R, and ggplot2 version `r packageVersion("ggplot2")` from the tidyverse [@tidyverse].
+
+```{r}
+#| label: setup
+#| message: false
+
+# load packages
+library(readr)
+library(ggplot2)
+
+# load script files
+
+```
+
+# Data
+
+```{r}
+# load data
+#| label: data load
+
+# read in data and don't show col types to suppress message
+co14s <- read_csv("data/colorado_14s.csv", show_col_types = FALSE)
+
+```
+
+# Plots {#sec-plots}
+
+The figures below display data about Colorado mountains over 14,000 feet (14ers), plus a few non-14ers. 
+
+@fig-1 shows distance in miles vs. elevation gain in feet; the points are colored by the difficulty of the trail and shaped (circle or triangle) according to whether the mountain is a 14er or not.
+
+@fig-2 shows elevation in feet vs. prominence in feet; the points are colored by the difficulty of the trail and shaped by the range of which the mountain is part.
+
+@fig-3 shows longitude vs. latitude; the points are colored by elevation in feet and shaped by the range of which the mountain is part.
+
+
+## Distance vs. Elevation Gain
+
+@fig-1 (below) shows Distance in miles vs. Elevation gain in feet and includes an evaluation of trail difficulty using "classes" (and also shows whether the mountain is above or below 14,000 feet). It seems intuitive that the longer and higher the trail/mountain is, the harder it would be (higher class). However, steepness factors in--shorter trails that are steeper are harder; therefore, those above the line of best fit, whose slope is approximately 250 ft/mi, include more "hard" or higher class trails. Additionally, most of the mountains with 2000-4000 ft of elevation gain and trails of <10 miles are considered Class 2, while above those thresholds, the classes are more variable, likely dependent on steepness. You can see the three 14ers that are outliers (furthest below the line of best fit), at about 13-14 mi and 3500 ft elevation gain, 22 mi and ~5900 ft elevation gain, and 26 mi and ~7500 ft elevation gain; these outliers include two Class 1s and one Hard Class 3. The Hard Class 3 is below the line of best fit, but the difficulty evaluation also factors in things like how well-marked the trail is, so it's possible that even though this trail might be less steep, it is still harder than other, better-marked trails.
+
+```{r}
+#| label: fig-1
+#| fig-cap: Colorado 14ers Distance (mi) vs. Elevation gain (ft), colored by Difficulty, shaped by Fourteener (y/n).
+#| fig-width: 7
+#| fig-height: 5
+#| message: false
+
+ggplot(co14s) + 
+  aes(x = Distance_mi, y = `Elevation Gain_ft`, color = Difficulty, shape = fourteener) + # map x and y variables to plot distance vs elevation gain, visualize by color (diffculty) and shape (fourteener)
+  geom_point(size = 3) + # increase size of points to make larger
+  geom_smooth(aes(group = 1, shape = NULL), method = lm, se = FALSE, color = "black", linewidth = 0.5) + # add a line of best fit and drop 'shape' aesthetic to get rid of warning message about geom_smooth()
+  theme_bw() + # add theme to make plot prettier
+  labs( # add axis titles and make sure the mapped "shape" legend engry has a capitalized "F" in Fourteener
+    x = "Distance (miles)",
+    y = "Elevation gain (feet)",
+    title = "Distance vs. Elevation Gain of Colorado Mountains",
+    shape = "Fourteener"
+  )
+```
+
+## Elevation vs. Prominence
+
+@fig-2 (below) shows Elevation in feet vs. Prominence in feet and is--similarly to @fig-1--colored by Difficulty. However, it also is shaped by Mountain Range to illustrate similarities (or differences) between and amongst different ranges. The elevation does not seem particularly correlated to prominence; in other words, the higher the mountain is above sea level does not seem to directly relate to how high it is compared to the surrounding area (how high it IS vs. how high it SEEMS). It does seem, though, like the ranges are relatively well-constrained vertically. In other words, the mountains in one range have (for the most part) similar prominence--especially the Sawatch Range. An exception is the Sangre de Cristo Range, whose mountains range from ~1000-5000+ ft of prominence. There does not seem to be a strong relationship between prominence and difficulty, though most mountains with prominences under 2500 feet are considered class 2 (but with many exceptions). 
+
+``` {r}
+#| label: fig-2
+#| fig-cap: Colorado 14ers Elevation (ft) vs. Prominence (ft), colored by Difficulty, shaped by Mountain Range.
+#| fig-width: 7
+#| fig-height: 5
+ggplot(co14s) + 
+  aes(x = Elevation_ft, y = Prominence_ft, color = Difficulty, shape = `Mountain Range`) + # map x and y variables to plot elevation vs. prominence, visualize by color (diffculty) and shape (mountain range)
+  geom_point(size = 3) + # make points bigger to be more legible
+  theme_bw() + #change theme to make plot prettier
+  labs( # add axis and plot titles
+    x = "Elevation (feet)", 
+    y = "Prominence (feet)",
+    title = "Elevation vs. Prominence of Colorado Mountains",
+  ) 
+```
+
+## Longitude vs. Latitude
+
+@fig-3 (below) basically shows the geographic distribution of Colorado mountains/14ers (latitude and longitude). It is colored by elevation in feet and shaped by Mountain Range (the latter similar to @fig-2). This graph is the easiest to understand because the mountains in each range group together, which makes sense from a geographic perspective: all the Elk Mountains should be close together, as should be those in the San Juans, the Mosquitos, the Front Range, etc.. Interestingly, the elevations for each range seem to vary less than I would have expected--most are within 100-200 ft of one another within a range--but this does make sense considering geographic proximity. Of course, there are exceptions: the Sawatch Range has a big range in elevations, from lowest to highest (darkest to lightest blue). 
+``` {r}
+#| label: fig-3
+#| fig-cap: Colorado 14ers Longitude vs. Latitude, colored by Elevation (ft), shaped by Mountain Range.
+#| fig-width: 7
+#| fig-height: 5
+ggplot(co14s) + 
+  aes(x = Long, y = Lat, color = Elevation_ft, shape = `Mountain Range`) +  # map x and y variables to plot longitude vs latitude, visualize by color (elevation) and shape (mountain range)
+  geom_point(size = 3) + # increase size of points for legibility
+  theme_bw() + # add theme to make plot prettier
+  labs( # add axes titles and ensure the mapped "color" legend entry has proper formatting
+    x = "Longitude (degrees)",
+    y = "Latitude (degrees)",
+    title = "Longitude vs. Latitude of Colorado Mountains",
+    color = "Elevation (ft)"
+  )
+```
+
+# References
+::: {#refs}
